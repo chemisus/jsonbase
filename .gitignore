@@ -16,3 +16,4 @@ einstein2.esproj
 node_modules
 public/assets/builds
 coverage
+bower_components
