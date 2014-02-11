@@ -65,11 +65,11 @@ describe('jsonbase', function () {
         var query = database.query(file, constraints, 'table1');
 
         query = query.where(query.not(query.or([
-            query.gte(query.value('id'), query.const(9)),
+            query.lte(query.value('id'), query.const(9)),
             query.eq(query.const(3), query.value('id')),
             query.eq(query.value('id'), query.const(6))
         ])));
 
-        console.log(query.execute());
+        expect(query.execute().length).toBe(8);
     });
 });
