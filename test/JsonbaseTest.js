@@ -1,75 +1,35 @@
 describe('jsonbase', function () {
-    var database = new Database();
-    var migration = new Migration();
-    var table = new Table();
-
-    var constraints = {
-        generate: new GenerateConstraint('generate'),
-        unique: new UniqueConstraint('unique'),
-        save_database: new SaveDatabaseConstraint('save_database')
-    };
-
-    var file;
+    var jsonbase = null;
+    var file = null;
+    var database = null;
+    var table = null;
+    var migration = null;
+    var constraints = null;
 
     beforeEach(function () {
+        file = {
+            tables: {
+                table1: {
+                    records: [{id: 1}]
+                }
+            }
+        };
 
-        file = database.initFile();
+        database = jasmine.createSpyObj('database', ['a']);
+        table = jasmine.createSpyObj('table', ['insert']);
+        constraints = jasmine.createSpyObj('constraints', ['a']);
 
-        var migrations = [
-            migration.create(function (file, constraints) {
-                table.create(file, 'table1');
-                constraints['generate'].create(file, 'table1_generate', 'table1', 'id');
-                constraints['unique'].create(file, 'table1_unique', 'table1', 'id');
-            }),
-            migration.create(function (file, constraints) {
-                table.create(file, 'table2');
-                constraints['generate'].create(file, 'table2_generate', 'table2', 'id');
-                constraints['unique'].create(file, 'table2_unique', 'table2', 'id');
-            }),
-            migration.create(function (file, constraints) {
-                table.create(file, 'table3');
-                constraints['generate'].create(file, 'table3_generate', 'table3', 'id');
-                constraints['unique'].create(file, 'table3_unique', 'table3', 'id');
-            }),
-            migration.create(function (file, constraints) {
-                constraints['save_database'].create(file, 'db_save');
-            }),
-            migration.create(function (file, constraints) {
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-                table.insert(file, constraints, 'table1', {});
-            })
-        ];
-
-        database.migrateDatabase(file, constraints, migrations);
+        jsonbase = new Jsonbase(file, database, table, migration, constraints);
     });
 
-    it('should be able to migrate.', function () {
-    });
+    it('should be able to insert', function () {
+        var record = {id: 2};
+        var table_name = 'table1';
 
-    it('should be able to be queried', function () {
-        var query = database.query(file, constraints, 'table1');
+        console.log(angular.toJson([file, constraints, table_name, record]));
 
-        query = query.where(query.not(query.or([
-            query.lte(query.value('id'), query.const(9)),
-            query.eq(query.const(3), query.value('id')),
-            query.eq(query.value('id'), query.const(6))
-        ])));
+        expect(table.insert).toHaveBeenCalledWith(file, constraints, table_name, record);
 
-        expect(query.execute().length).toBe(8);
+        jsonbase.insert(table_name, record);
     });
 });
