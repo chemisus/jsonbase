@@ -3,6 +3,19 @@ describe('system', function () {
     var migration = new Migration();
     var table = new Table();
 
+    var operations = {
+        const: new ConstOperation(),
+        value: new ValueOperation(),
+        eq: new EqualOperation(),
+        gt: new GreaterThanOperation(),
+        gte: new GreaterThanOrEqualOperation(),
+        lt: new LessThanOperation(),
+        lte: new LessThanOrEqualOperation(),
+        not: new NotOperation(),
+        and: new AndOperation(),
+        or: new OrOperation()
+    };
+
     var constraints = {
         generate: new GenerateConstraint('generate'),
         unique: new UniqueConstraint('unique'),
@@ -62,7 +75,7 @@ describe('system', function () {
     });
 
     it('should be able to be queried', function () {
-        var query = database.query(file, constraints, 'table1');
+        var query = database.query(file, constraints, 'table1', operations);
 
         query = query.where(query.not(query.or([
             query.lte(query.value('id'), query.const(9)),

@@ -2,27 +2,21 @@
  *
  * @param database
  * @param constraints
- * @param {QueryExecutor} database_query
+ * @param {Query} database_query
  * @param query_executor
  * @constructor
  */
-function QueryBuilder(database, constraints, database_query, query_executor) {
+function QueryBuilder(database, constraints, database_query, query_executor, operations) {
     this.execute = function () {
         return database_query.execute(database, query_executor);
     };
 
     this.const = function (value) {
-        return {
-            op: 'const',
-            value: value
-        };
+        return operations.const.make(value);
     };
 
     this.value = function (value) {
-        return {
-            op: 'value',
-            value: value
-        };
+        return operations.value.make(value);
     };
 
     this.where = function (value) {
@@ -32,73 +26,34 @@ function QueryBuilder(database, constraints, database_query, query_executor) {
     };
 
     this.eq = function (lhs, rhs) {
-        return {
-            op: 'eq',
-            lhs: lhs,
-            rhs: rhs
-        };
-
-        return this;
+        return operations.eq.make(lhs, rhs);
     };
 
     this.gt = function (lhs, rhs) {
-        return {
-            op: 'gt',
-            lhs: lhs,
-            rhs: rhs
-        };
-
-        return this;
+        return operations.gt.make(lhs, rhs);
     };
 
     this.gte = function (lhs, rhs) {
-        return {
-            op: 'gte',
-            lhs: lhs,
-            rhs: rhs
-        };
-
-        return this;
+        return operations.gte.make(lhs, rhs);
     };
 
     this.lt = function (lhs, rhs) {
-        return {
-            op: 'lt',
-            lhs: lhs,
-            rhs: rhs
-        };
-
-        return this;
+        return operations.lt.make(lhs, rhs);
     };
 
     this.lte = function (lhs, rhs) {
-        return {
-            op: 'lte',
-            lhs: lhs,
-            rhs: rhs
-        };
-
-        return this;
+        return operations.lte.make(lhs, rhs);
     };
 
-    this.or = function (value) {
-        return {
-            op: 'or',
-            value: value
-        }
+    this.or = function (values) {
+        return operations.or.make(values);
     };
 
-    this.and = function (value) {
-        return {
-            op: 'and',
-            value: value
-        }
+    this.and = function (values) {
+        return operations.and.make(values);
     };
 
     this.not = function (value) {
-        return {
-            op: 'not',
-            value: value
-        };
+        return operations.not.make(value);
     };
 }

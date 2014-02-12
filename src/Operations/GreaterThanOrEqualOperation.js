@@ -1,5 +1,13 @@
-function GreaterThanOrEqualOperation(operations) {
-    this.execute = function (record, op) {
-        return operations[op.lhs.op].execute(record, op.lhs) >= operations[op.rhs.op].execute(record, op.rhs);
+function GreaterThanOrEqualOperation() {
+    this.make = function (lhs, rhs) {
+        return {
+            op: 'gte',
+            lhs: lhs,
+            rhs: rhs
+        };
+    };
+
+    this.execute = function (record, op, operations) {
+        return operations[op.lhs.op].execute(record, op.lhs, operations) >= operations[op.rhs.op].execute(record, op.rhs, operations);
     };
 }

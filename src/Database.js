@@ -49,9 +49,9 @@ function Database() {
      *
      * @returns {QueryBuilder}
      */
-    this.query = function (file, constraints, table_name) {
-        var query = new QueryExecutor();
+    this.query = function (file, constraints, table_name, operations) {
+        var query = new Query(operations);
 
-        return new QueryBuilder(file, constraints, query, query.make(table_name));
+        return new QueryBuilder(file, constraints, query, query.make(table_name), operations);
     }
 }
