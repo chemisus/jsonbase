@@ -1,13 +1,13 @@
-function ConstOperation() {
+function GetOperation() {
     this.make = function (value) {
         return {
-            op: 'const',
+            op: 'get',
             value: value
         };
     };
 
     this.execute = function (record, current, operations) {
-        return current.value;
+        return record[current.value];
     };
 
     this.toSql = function (current, operations) {

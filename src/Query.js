@@ -6,7 +6,11 @@ function Query() {
         };
     };
 
-    this.execute = function (op, operations) {
-        return operations[op.type].execute(null, op, operations);
+    this.execute = function (current, operations) {
+        return operations[current.op].execute(null, current, operations);
+    };
+
+    this.toSql = function (current, operations) {
+        return operations[current.op].toSql(current, operations);
     };
 }

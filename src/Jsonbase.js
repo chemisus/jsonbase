@@ -23,7 +23,8 @@ function Jsonbase(file, database, table, migration, constraints) {
         not: new NotOperation(),
         and: new AndOperation(),
         or: new OrOperation(),
-        select: new SelectOperation()
+        select: new SelectOperation(),
+        from: new FromOperation()
     };
 
     this.operations = function () {
@@ -45,5 +46,18 @@ function Jsonbase(file, database, table, migration, constraints) {
         var query = qb.select(file.tables[table_name].records, value);
 
         return q.execute(query, operations);
+    };
+
+    this.sql = function (table_name, value) {
+        var qb = new QueryBuilder(operations);
+        var q = new Query(operations);
+
+        if (!value) {
+            return file.tables[table_name].records;
+        }
+
+        var query = qb.select(qb.from(file, table_name), value);
+
+        return q.toSql(query, operations);
     };
 }

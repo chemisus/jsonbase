@@ -7,7 +7,7 @@ function GreaterThanOperation() {
         };
     };
 
-    this.execute = function (record, op, operations) {
-        return operations[op.lhs.op].execute(record, op.lhs, operations) > operations[op.rhs.op].execute(record, op.rhs, operations);
+    this.execute = function (record, current, operations) {
+        return operations[current.lhs.op].execute(record, current.lhs, operations) > operations[current.rhs.op].execute(record, current.rhs, operations);
     };
 }

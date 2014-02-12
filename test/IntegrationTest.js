@@ -119,4 +119,12 @@ describe('system', function () {
 
         expect(jsonbase.select(table_name, qb.eq(qb.get('id'), qb.const(2)))[0].id).toBe(2);
     });
+
+    it('should be able to generate sql', function () {
+        var qb = new QueryBuilder(jsonbase.operations());
+        var table_name = "table1";
+        var expected = "select * from " + table_name + " where id = 2";
+
+        expect(jsonbase.sql(table_name, qb.eq(qb.get('id'), qb.const(2)))).toBe(expected);
+    });
 });

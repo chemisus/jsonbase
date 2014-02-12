@@ -6,7 +6,7 @@ function NotOperation() {
         };
     };
 
-    this.execute = function (record, op, operations) {
-        return !operations[op.value.op].execute(record, op.value, operations);
+    this.execute = function (record, current, operations) {
+        return !operations[current.value.op].execute(record, current.value, operations);
     };
 }

@@ -42,4 +42,8 @@ function QueryBuilder(operations) {
     this.select = function (records, value) {
         return operations.select.make(records,  value);
     };
+
+    this.from = function (file, table_name) {
+        return operations.from.make(file, table_name);
+    };
 }

@@ -6,9 +6,9 @@ function AndOperation() {
         };
     };
 
-    this.execute = function (record, op) {
-        for (var i in op.value) {
-            if (!operations[op.value[i].op].execute(record, op.value[i])) {
+    this.execute = function (record, current) {
+        for (var i in current.value) {
+            if (!operations[current.value[i].op].execute(record, current.value[i])) {
                 return false;
             }
         }

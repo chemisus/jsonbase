@@ -6,9 +6,9 @@ function OrOperation() {
         };
     };
 
-    this.execute = function (record, op, operations) {
-        for (var i in op.value) {
-            if (operations[op.value[i].op].execute(record, op.value[i], operations)) {
+    this.execute = function (record, current, operations) {
+        for (var i in current.value) {
+            if (operations[current.value[i].op].execute(record, current.value[i], operations)) {
                 return true;
             }
         }

@@ -142,7 +142,8 @@ function Jsonbase(file, database, table, migration, constraints) {
         not: new NotOperation(),
         and: new AndOperation(),
         or: new OrOperation(),
-        select: new SelectOperation()
+        select: new SelectOperation(),
+        from: new FromOperation()
     };
 
     this.operations = function () {
@@ -165,6 +166,19 @@ function Jsonbase(file, database, table, migration, constraints) {
 
         return q.execute(query, operations);
     };
+
+    this.sql = function (table_name, value) {
+        var qb = new QueryBuilder(operations);
+        var q = new Query(operations);
+
+        if (!value) {
+            return file.tables[table_name].records;
+        }
+
+        var query = qb.select(qb.from(file, table_name), value);
+
+        return q.toSql(query, operations);
+    };
 }
 ;function Migration() {
     this.create = function (up, down) {
@@ -186,9 +200,9 @@ function Jsonbase(file, database, table, migration, constraints) {
         };
     };
 
-    this.execute = function (record, op) {
-        for (var i in op.value) {
-            if (!operations[op.value[i].op].execute(record, op.value[i])) {
+    this.execute = function (record, current) {
+        for (var i in current.value) {
+            if (!operations[current.value[i].op].execute(record, current.value[i])) {
                 return false;
             }
         }
@@ -204,8 +218,12 @@ function Jsonbase(file, database, table, migration, constraints) {
         };
     };
 
-    this.execute = function (record, op, operations) {
-        return op.value;
+    this.execute = function (record, current, operations) {
+        return current.value;
+    };
+
+    this.toSql = function (current, operations) {
+        return current.value;
     };
 }
 ;function EqualOperation() {
@@ -217,8 +235,47 @@ function Jsonbase(file, database, table, migration, constraints) {
         };
     };
 
-    this.execute = function (record, op, operations) {
-        return operations[op.lhs.op].execute(record, op.lhs, operations) === operations[op.rhs.op].execute(record, op.rhs, operations);
+    this.execute = function (record, current, operations) {
+        return operations[current.lhs.op].execute(record, current.lhs, operations) === operations[current.rhs.op].execute(record, current.rhs, operations);
+    };
+
+    this.toSql = function (current, operations) {
+        return operations[current.lhs.op].toSql(current.lhs, operations) +
+            " = " +
+            operations[current.rhs.op].toSql(current.rhs, operations);
+    };
+}
+;function FromOperation() {
+    this.make = function (file, table_name) {
+        return {
+            op: 'from',
+            file: file,
+            table: table_name
+        };
+    };
+
+    this.execute = function (record, current, operations) {
+        return current.file.tables[current.table_name].records;
+    };
+
+    this.toSql = function (current, operations) {
+        return "from " + current.table;
+    };
+}
+;function GetOperation() {
+    this.make = function (value) {
+        return {
+            op: 'get',
+            value: value
+        };
+    };
+
+    this.execute = function (record, current, operations) {
+        return record[current.value];
+    };
+
+    this.toSql = function (current, operations) {
+        return current.value;
     };
 }
 ;function GreaterThanOperation() {
@@ -230,8 +287,8 @@ function Jsonbase(file, database, table, migration, constraints) {
         };
     };
 
-    this.execute = function (record, op, operations) {
-        return operations[op.lhs.op].execute(record, op.lhs, operations) > operations[op.rhs.op].execute(record, op.rhs, operations);
+    this.execute = function (record, current, operations) {
+        return operations[current.lhs.op].execute(record, current.lhs, operations) > operations[current.rhs.op].execute(record, current.rhs, operations);
     };
 }
 ;function GreaterThanOrEqualOperation() {
@@ -243,8 +300,8 @@ function Jsonbase(file, database, table, migration, constraints) {
         };
     };
 
-    this.execute = function (record, op, operations) {
-        return operations[op.lhs.op].execute(record, op.lhs, operations) >= operations[op.rhs.op].execute(record, op.rhs, operations);
+    this.execute = function (record, current, operations) {
+        return operations[current.lhs.op].execute(record, current.lhs, operations) >= operations[current.rhs.op].execute(record, current.rhs, operations);
     };
 }
 ;function LessThanOperation() {
@@ -256,8 +313,8 @@ function Jsonbase(file, database, table, migration, constraints) {
         };
     };
 
-    this.execute = function (record, op, operations) {
-        return operations[op.lhs.op].execute(record, op.lhs, operations) < operations[op.rhs.op].execute(record, op.rhs, operations);
+    this.execute = function (record, current, operations) {
+        return operations[current.lhs.op].execute(record, current.lhs, operations) < operations[current.rhs.op].execute(record, current.rhs, operations);
     };
 }
 ;function LessThanOrEqualOperation() {
@@ -269,8 +326,8 @@ function Jsonbase(file, database, table, migration, constraints) {
         };
     };
 
-    this.execute = function (record, op, operations) {
-        return operations[op.lhs.op].execute(record, op.lhs, operations) <= operations[op.rhs.op].execute(record, op.rhs, operations);
+    this.execute = function (record, current, operations) {
+        return operations[current.lhs.op].execute(record, current.lhs, operations) <= operations[current.rhs.op].execute(record, current.rhs, operations);
     };
 }
 ;function NotOperation() {
@@ -281,8 +338,8 @@ function Jsonbase(file, database, table, migration, constraints) {
         };
     };
 
-    this.execute = function (record, op, operations) {
-        return !operations[op.value.op].execute(record, op.value, operations);
+    this.execute = function (record, current, operations) {
+        return !operations[current.value.op].execute(record, current.value, operations);
     };
 }
 ;function OrOperation() {
@@ -293,9 +350,9 @@ function Jsonbase(file, database, table, migration, constraints) {
         };
     };
 
-    this.execute = function (record, op, operations) {
-        for (var i in op.value) {
-            if (operations[op.value[i].op].execute(record, op.value[i], operations)) {
+    this.execute = function (record, current, operations) {
+        for (var i in current.value) {
+            if (operations[current.value[i].op].execute(record, current.value[i], operations)) {
                 return true;
             }
         }
@@ -306,7 +363,7 @@ function Jsonbase(file, database, table, migration, constraints) {
 ;function SelectOperation() {
     this.make = function (records, value) {
         return {
-            type: 'select',
+            op: 'select',
             records: records,
             value: value
         };
@@ -317,17 +374,12 @@ function Jsonbase(file, database, table, migration, constraints) {
             return operations[op.value.op].execute(record, op.value, operations);
         });
     };
-}
-;function GetOperation() {
-    this.make = function (value) {
-        return {
-            op: 'get',
-            value: value
-        };
-    };
 
-    this.execute = function (record, op, operations) {
-        return record[op.value];
+    this.toSql = function (current, operations) {
+        return "select * " +
+            operations[current.records.op].toSql(current.records, operations) +
+            " where " +
+            operations[current.value.op].toSql(current.value, operations);
     };
 }
 ;function Query() {
@@ -338,8 +390,12 @@ function Jsonbase(file, database, table, migration, constraints) {
         };
     };
 
-    this.execute = function (op, operations) {
-        return operations[op.type].execute(null, op, operations);
+    this.execute = function (current, operations) {
+        return operations[current.op].execute(null, current, operations);
+    };
+
+    this.toSql = function (current, operations) {
+        return operations[current.op].toSql(current, operations);
     };
 }
 ;function QueryBuilder(operations) {
@@ -385,6 +441,10 @@ function Jsonbase(file, database, table, migration, constraints) {
 
     this.select = function (records, value) {
         return operations.select.make(records,  value);
+    };
+
+    this.from = function (file, table_name) {
+        return operations.from.make(file, table_name);
     };
 }
 ;function SaveDatabaseConstraint(type) {
