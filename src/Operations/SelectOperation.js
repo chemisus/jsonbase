@@ -4,7 +4,7 @@ function SelectOperation() {
             type: 'select',
             records: records,
             value: value
-        }
+        };
     };
 
     this.execute = function (record, op, operations) {

@@ -53,5 +53,5 @@ function Database() {
         var query = new Query(operations);
 
         return new QueryBuilder(file, constraints, query, query.make(table_name), operations);
-    }
+    };
 }

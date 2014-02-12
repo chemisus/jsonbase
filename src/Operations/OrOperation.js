@@ -3,7 +3,7 @@ function OrOperation() {
         return {
             op: 'or',
             value: values
-        }
+        };
     };
 
     this.execute = function (record, op, operations) {

@@ -32,21 +32,21 @@ describe('system', function () {
         var migrations = [
             migration.create(function (file, constraints) {
                 table.create(file, 'table1');
-                constraints['generate'].create(file, 'table1_generate', 'table1', 'id');
-                constraints['unique'].create(file, 'table1_unique', 'table1', 'id');
+                constraints.generate.create(file, 'table1_generate', 'table1', 'id');
+                constraints.unique.create(file, 'table1_unique', 'table1', 'id');
             }),
             migration.create(function (file, constraints) {
                 table.create(file, 'table2');
-                constraints['generate'].create(file, 'table2_generate', 'table2', 'id');
-                constraints['unique'].create(file, 'table2_unique', 'table2', 'id');
+                constraints.generate.create(file, 'table2_generate', 'table2', 'id');
+                constraints.unique.create(file, 'table2_unique', 'table2', 'id');
             }),
             migration.create(function (file, constraints) {
                 table.create(file, 'table3');
-                constraints['generate'].create(file, 'table3_generate', 'table3', 'id');
-                constraints['unique'].create(file, 'table3_unique', 'table3', 'id');
+                constraints.generate.create(file, 'table3_generate', 'table3', 'id');
+                constraints.unique.create(file, 'table3_unique', 'table3', 'id');
             }),
             migration.create(function (file, constraints) {
-                constraints['save_database'].create(file, 'db_save');
+                constraints.save_database.create(file, 'db_save');
             }),
             migration.create(function (file, constraints) {
                 table.insert(file, constraints, 'table1', {});

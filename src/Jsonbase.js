@@ -15,8 +15,4 @@ function Jsonbase(file, database, table, migration, constraints) {
     this.insert = function (table_name, record) {
         table.insert(file, constraints, table_name, record);
     };
-
-    this.query = function () {
-        
-    };
 }

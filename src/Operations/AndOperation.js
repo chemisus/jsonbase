@@ -3,7 +3,7 @@ function AndOperation() {
         return {
             op: 'and',
             value: values
-        }
+        };
     };
 
     this.execute = function (record, op) {
