@@ -2,13 +2,13 @@
  *
  * @param database
  * @param constraints
- * @param {Query} database_query
- * @param query
+ * @param {QueryExecutor} database_query
+ * @param query_executor
  * @constructor
  */
-function QueryBuilder(database, constraints, database_query, query) {
+function QueryBuilder(database, constraints, database_query, query_executor) {
     this.execute = function () {
-        return database_query.execute(database, query);
+        return database_query.execute(database, query_executor);
     };
 
     this.const = function (value) {
@@ -26,7 +26,7 @@ function QueryBuilder(database, constraints, database_query, query) {
     };
 
     this.where = function (value) {
-        query.where = value;
+        query_executor.where = value;
 
         return this;
     };

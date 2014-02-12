@@ -50,7 +50,7 @@ function Database() {
      * @returns {QueryBuilder}
      */
     this.query = function (file, constraints, table_name) {
-        var query = new Query();
+        var query = new QueryExecutor();
 
         return new QueryBuilder(file, constraints, query, query.make(table_name));
     }
