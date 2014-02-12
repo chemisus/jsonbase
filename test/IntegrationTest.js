@@ -13,7 +13,7 @@ describe('system', function () {
 
     var operations = {
         const: new ConstOperation(),
-        value: new ValueOperation(),
+        get: new GetOperation(),
         eq: new EqualOperation(),
         gt: new GreaterThanOperation(),
         gte: new GreaterThanOrEqualOperation(),
@@ -85,7 +85,7 @@ describe('system', function () {
 
         var query = qb.select(
             file.tables.table1.records,
-            qb.eq(qb.value('id'), qb.const(1))
+            qb.eq(qb.get('id'), qb.const(1))
         );
 
         expect(q.execute(query, operations).length).toBe(1);
@@ -99,9 +99,9 @@ describe('system', function () {
             file.tables.table1.records,
             qb.not(
                 qb.or([
-                    qb.lte(qb.value('id'), qb.const(9)),
-                    qb.eq(qb.const(3), qb.value('id')),
-                    qb.eq(qb.value('id'), qb.const(6))
+                    qb.lte(qb.get('id'), qb.const(9)),
+                    qb.eq(qb.const(3), qb.get('id')),
+                    qb.eq(qb.get('id'), qb.const(6))
                 ])
             )
         );
@@ -117,6 +117,6 @@ describe('system', function () {
         jsonbase.insert(table_name, {});
         jsonbase.insert(table_name, {});
 
-        expect(jsonbase.select(table_name, qb.eq(qb.value('id'), qb.const(2)))[0].id).toBe(2);
+        expect(jsonbase.select(table_name, qb.eq(qb.get('id'), qb.const(2)))[0].id).toBe(2);
     });
 });

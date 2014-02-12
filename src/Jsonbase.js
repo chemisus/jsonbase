@@ -14,7 +14,7 @@ function Jsonbase(file, database, table, migration, constraints) {
 
     var operations = {
         const: new ConstOperation(),
-        value: new ValueOperation(),
+        get: new GetOperation(),
         eq: new EqualOperation(),
         gt: new GreaterThanOperation(),
         gte: new GreaterThanOrEqualOperation(),

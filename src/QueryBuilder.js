@@ -3,8 +3,8 @@ function QueryBuilder(operations) {
         return operations.const.make(value);
     };
 
-    this.value = function (value) {
-        return operations.value.make(value);
+    this.get = function (value) {
+        return operations.get.make(value);
     };
 
     this.eq = function (lhs, rhs) {

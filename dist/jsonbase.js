@@ -133,7 +133,7 @@ function Jsonbase(file, database, table, migration, constraints) {
 
     var operations = {
         const: new ConstOperation(),
-        value: new ValueOperation(),
+        get: new GetOperation(),
         eq: new EqualOperation(),
         gt: new GreaterThanOperation(),
         gte: new GreaterThanOrEqualOperation(),
@@ -318,10 +318,10 @@ function Jsonbase(file, database, table, migration, constraints) {
         });
     };
 }
-;function ValueOperation() {
+;function GetOperation() {
     this.make = function (value) {
         return {
-            op: 'value',
+            op: 'get',
             value: value
         };
     };
@@ -347,8 +347,8 @@ function Jsonbase(file, database, table, migration, constraints) {
         return operations.const.make(value);
     };
 
-    this.value = function (value) {
-        return operations.value.make(value);
+    this.get = function (value) {
+        return operations.get.make(value);
     };
 
     this.eq = function (lhs, rhs) {

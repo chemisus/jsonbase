@@ -1,7 +1,7 @@
-function ValueOperation() {
+function GetOperation() {
     this.make = function (value) {
         return {
-            op: 'value',
+            op: 'get',
             value: value
         };
     };
