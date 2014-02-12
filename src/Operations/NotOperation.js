@@ -1,3 +1,5 @@
-function NotOperation(record, op) {
-    return !this[op.value.op](record, op.value);
+function NotOperation(operations) {
+    this.execute = function (record, op) {
+        return !operations[op.value.op].execute(record, op.value);
+    };
 }

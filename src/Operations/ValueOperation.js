@@ -1,3 +1,5 @@
-function ValueOperation(record, op) {
-    return record[op.value];
+function ValueOperation(operations) {
+    this.execute = function (record, op) {
+        return record[op.value];
+    };
 }

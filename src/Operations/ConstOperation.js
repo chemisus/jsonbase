@@ -1,3 +1,5 @@
-function ConstOperation(record, op) {
-    return op.value;
+function ConstOperation(operations) {
+    this.execute = function (record, op) {
+        return op.value;
+    };
 }

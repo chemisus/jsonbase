@@ -1,16 +1,16 @@
 function QueryExecutor() {
-    var operations = {
-        const: ConstOperation,
-        value: ValueOperation,
-        eq: EqualOperation,
-        gt: GreaterThanOperation,
-        gte: GreaterThanOrEqualOperation,
-        lt: LessThanOperation,
-        lte: LessThanOrEqualOperation,
-        not: NotOperation,
-        and: AndOperation,
-        or: OrOperation
-    };
+    var operations = {};
+
+    operations.const = new ConstOperation(operations);
+    operations.value = new ValueOperation(operations);
+    operations.eq = new EqualOperation(operations);
+    operations.gt = new GreaterThanOperation(operations);
+    operations.gte = new GreaterThanOrEqualOperation(operations);
+    operations.lt = new LessThanOperation(operations);
+    operations.lte = new LessThanOrEqualOperation(operations);
+    operations.not = new NotOperation(operations);
+    operations.and = new AndOperation(operations);
+    operations.or = new OrOperation(operations);
 
     this.make = function (table_name) {
         return {
@@ -20,7 +20,7 @@ function QueryExecutor() {
 
     this.execute = function (database, query) {
         return database.tables[query.from].records.filter(function (record) {
-            if (query.where && !operations[query.where.op](record, query.where)) {
+            if (query.where && !operations[query.where.op].execute(record, query.where)) {
                 return false;
             }
 
