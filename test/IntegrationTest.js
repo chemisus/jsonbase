@@ -3,6 +3,14 @@ describe('system', function () {
     var migration = new Migration();
     var table = new Table();
 
+    var jsonbase;
+
+    var constraints = {
+        generate: new GenerateConstraint('generate'),
+        unique: new UniqueConstraint('unique'),
+        save_database: new SaveDatabaseConstraint('save_database')
+    };
+
     var operations = {
         const: new ConstOperation(),
         value: new ValueOperation(),
@@ -15,12 +23,6 @@ describe('system', function () {
         and: new AndOperation(),
         or: new OrOperation(),
         select: new SelectOperation()
-    };
-
-    var constraints = {
-        generate: new GenerateConstraint('generate'),
-        unique: new UniqueConstraint('unique'),
-        save_database: new SaveDatabaseConstraint('save_database')
     };
 
     var file;
@@ -70,6 +72,8 @@ describe('system', function () {
         ];
 
         database.migrateDatabase(file, constraints, migrations);
+
+        jsonbase = new Jsonbase(file, database, table, migration, constraints);
     });
 
     it('should be able to migrate.', function () {
@@ -103,5 +107,16 @@ describe('system', function () {
         );
 
         expect(q.execute(query, operations).length).toBe(8);
+    });
+
+    it('should be able to select', function () {
+        var table_name = 'table1';
+        var qb = new QueryBuilder(jsonbase.operations());
+
+        jsonbase.insert(table_name, {});
+        jsonbase.insert(table_name, {});
+        jsonbase.insert(table_name, {});
+
+        expect(jsonbase.select(table_name, qb.eq(qb.value('id'), qb.const(2)))[0].id).toBe(2);
     });
 });

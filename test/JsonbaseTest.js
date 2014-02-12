@@ -32,4 +32,5 @@ describe('jsonbase', function () {
 
         expect(table.insert).toHaveBeenCalledWith(file, constraints, table_name, record);
     });
+
 });
