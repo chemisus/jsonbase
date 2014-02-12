@@ -157,6 +157,10 @@ function Jsonbase(file, database, table, migration, constraints) {
         var qb = new QueryBuilder(operations);
         var q = new Query(operations);
 
+        if (!value) {
+            return file.tables[table_name].records;
+        }
+
         var query = qb.select(file.tables[table_name].records, value);
 
         return q.execute(query, operations);
