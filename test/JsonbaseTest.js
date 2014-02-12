@@ -10,7 +10,9 @@ describe('jsonbase', function () {
         file = {
             tables: {
                 table1: {
-                    records: [{id: 1}]
+                    records: [
+                        {id: 1}
+                    ]
                 }
             }
         };
@@ -26,10 +28,8 @@ describe('jsonbase', function () {
         var record = {id: 2};
         var table_name = 'table1';
 
-        console.log(angular.toJson([file, constraints, table_name, record]));
+        jsonbase.insert(table_name, record);
 
         expect(table.insert).toHaveBeenCalledWith(file, constraints, table_name, record);
-
-        jsonbase.insert(table_name, record);
     });
 });
