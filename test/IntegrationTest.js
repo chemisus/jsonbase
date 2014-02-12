@@ -13,7 +13,8 @@ describe('system', function () {
         lte: new LessThanOrEqualOperation(),
         not: new NotOperation(),
         and: new AndOperation(),
-        or: new OrOperation()
+        or: new OrOperation(),
+        select: new SelectOperation()
     };
 
     var constraints = {
@@ -75,14 +76,32 @@ describe('system', function () {
     });
 
     it('should be able to be queried', function () {
-        var query = database.query(file, constraints, 'table1', operations);
+        var qb = new QueryBuilder(operations);
+        var q = new Query(operations);
 
-        query = query.where(query.not(query.or([
-            query.lte(query.value('id'), query.const(9)),
-            query.eq(query.const(3), query.value('id')),
-            query.eq(query.value('id'), query.const(6))
-        ])));
+        var query = qb.select(
+            file.tables.table1.records,
+            qb.eq(qb.value('id'), qb.const(1))
+        );
 
-        expect(query.execute().length).toBe(8);
+        expect(q.execute(query, operations).length).toBe(1);
+    });
+
+    it('should be able to be queried', function () {
+        var qb = new QueryBuilder(operations);
+        var q = new Query(operations);
+
+        var query = qb.select(
+            file.tables.table1.records,
+            qb.not(
+                qb.or([
+                    qb.lte(qb.value('id'), qb.const(9)),
+                    qb.eq(qb.const(3), qb.value('id')),
+                    qb.eq(qb.value('id'), qb.const(6))
+                ])
+            )
+        );
+
+        expect(q.execute(query, operations).length).toBe(8);
     });
 });

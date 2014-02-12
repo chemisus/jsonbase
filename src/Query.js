@@ -1,4 +1,4 @@
-function Query(operations) {
+function Query() {
 
     this.make = function (table_name) {
         return {
@@ -6,13 +6,7 @@ function Query(operations) {
         }
     };
 
-    this.execute = function (database, query) {
-        return database.tables[query.from].records.filter(function (record) {
-            if (query.where && !operations[query.where.op].execute(record, query.where, operations)) {
-                return false;
-            }
-
-            return true;
-        });
+    this.execute = function (op, operations) {
+        return operations[op.type].execute(null, op, operations);
     };
 }
