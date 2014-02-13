@@ -13,7 +13,8 @@ describe('integration test', function () {
         table: new TableOperation(),
         const: new ConstOperation(),
         get: new GetOperation(),
-        eq: new EqualOperation()
+        eq: new EqualOperation(),
+        or: new OrOperation()
     };
 
     var environment = {
@@ -23,7 +24,7 @@ describe('integration test', function () {
         operations: ops
     };
 
-    it('should be able to filter records', function () {
+    it('should be able to filter to a single record', function () {
 
         var data = ops.select.make(
             ops.table.make('users'),
@@ -34,5 +35,24 @@ describe('integration test', function () {
         );
 
         expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'b'}]);
+    });
+
+    it('should be able to filter to multiple records', function () {
+
+        var data = ops.select.make(
+            ops.table.make('users'),
+            ops.or.make([
+                ops.eq.make(
+                    ops.get.make('name'),
+                    ops.const.make('b')
+                ),
+                ops.eq.make(
+                    ops.get.make('name'),
+                    ops.const.make('c')
+                )
+            ])
+        );
+
+        expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'b'}, {name: 'c'}]);
     });
 });
