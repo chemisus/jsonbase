@@ -6,4 +6,12 @@ function Jsonbase(environment) {
     this.load = function () {
         environment.file = environment.fromJson(localStorage.getItem(environment.name) || 'null');
     };
+
+    this.environment = function () {
+        return environment;
+    };
+
+    this.queryBuilder = function () {
+        return environment.query_builder;
+    };
 }

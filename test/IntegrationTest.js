@@ -1,5 +1,4 @@
 describe('integration test', function () {
-    var environment_factory = new EnvironmentFactory();
 
     var tables = {
         users: [
@@ -10,14 +9,11 @@ describe('integration test', function () {
         ]
     };
 
-    var ops = environment_factory.makeOperations();
+    var environment_factory = new EnvironmentFactory();
+    var jsonbase = new Jsonbase(environment_factory.make({tables: tables}));
+    var environment = jsonbase.environment();
+    var ops = environment.operations;
 
-    var environment = {
-        file: {
-            tables: tables
-        },
-        operations: ops
-    };
 
     it('should be able to filter to a single record', function () {
 

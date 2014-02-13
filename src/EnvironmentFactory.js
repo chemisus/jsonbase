@@ -2,13 +2,17 @@ function EnvironmentFactory() {
     this.make = function (file, options) {
         options = options || {};
 
-        return {
+        var environment = {
             file: file,
             operations: options.operations || this.makeOperations(),
             constraints: options.constraints || this.makeConstraints(),
             database: options.database || this.makeDatabase(),
-            table: options.table || this.makeTable()
+            table: options.table || this.makeTable(),
         };
+
+        environment.query_builder = this.makeQueryBuilder(environment);
+
+        return environment;
     };
 
     this.makeOperations = function () {
@@ -36,5 +40,9 @@ function EnvironmentFactory() {
 
     this.makeTable = function () {
         return new Table();
+    };
+
+    this.makeQueryBuilder = function (environment) {
+        return new QueryBuilder(environment);
     };
 }

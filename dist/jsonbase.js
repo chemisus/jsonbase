@@ -5,13 +5,17 @@ function Database() {
     this.make = function (file, options) {
         options = options || {};
 
-        return {
+        var environment = {
             file: file,
             operations: options.operations || this.makeOperations(),
             constraints: options.constraints || this.makeConstraints(),
             database: options.database || this.makeDatabase(),
-            table: options.table || this.makeTable()
+            table: options.table || this.makeTable(),
         };
+
+        environment.query_builder = this.makeQueryBuilder(environment);
+
+        return environment;
     };
 
     this.makeOperations = function () {
@@ -40,6 +44,10 @@ function Database() {
     this.makeTable = function () {
         return new Table();
     };
+
+    this.makeQueryBuilder = function (environment) {
+        return new QueryBuilder(environment);
+    };
 }
 ;function Jsonbase(environment) {
     this.save = function () {
@@ -48,6 +56,14 @@ function Database() {
 
     this.load = function () {
         environment.file = environment.fromJson(localStorage.getItem(environment.name) || 'null');
+    };
+
+    this.environment = function () {
+        return environment;
+    };
+
+    this.queryBuilder = function () {
+        return environment.query_builder;
     };
 }
 ;function AndOperation() {
