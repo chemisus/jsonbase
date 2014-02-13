@@ -47,6 +47,10 @@ function QueryBuilder(environment) {
         return environment.operations.in.make(lhs, rhs);
     };
 
+    this.like = function (lhs, rhs) {
+        return environment.operations.like.make(lhs, rhs);
+    };
+
     this.execute = function (query) {
         return environment.operations[query[0]].execute(query, environment);
     };

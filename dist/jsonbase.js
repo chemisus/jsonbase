@@ -55,6 +55,7 @@ function Database() {
             true: new TrueOperation(),
             in: new InOperation(),
             path: new PathOperation(),
+            like: new LikeOperation(),
             param: new ParameterOperation()
         };
     };
@@ -103,13 +104,16 @@ function Database() {
         environment.table.insert(this.file(), table_name, record);
     };
 
-    this.matches = function (table_name, values) {
+    this.matches = function (table_name, values, operations) {
+        operations = operations || {};
         var qb = this.queryBuilder();
 
         var where = [];
 
         for (var i in values) {
-            where.push(qb.eq(qb.get(i), qb.const(values[i])));
+            var operation = environment.operations[operations[i]] || qb.eq;
+
+            where.push(operation(qb.get(i), qb.const(values[i])));
         }
 
         return qb.execute(qb.select(
@@ -165,7 +169,10 @@ Jsonbase.Load = function (name) {
     };
 
     this.execute = function (data, environment) {
-        return environment.operations[data[1][0]].execute(data[1], environment) == environment.operations[data[2][0]].execute(data[2], environment);
+        var lhs = environment.operations[data[1][0]].execute(data[1], environment);
+        var rhs = environment.operations[data[2][0]].execute(data[2], environment);
+
+        return  lhs == rhs;
     };
 }
 ;function GetOperation() {
@@ -241,7 +248,23 @@ Jsonbase.Load = function (name) {
 
         return joins;
     };
-};function NotOperation() {
+};function LikeOperation() {
+    this.make = function (lhs, rhs) {
+        return [
+            'like',
+            lhs,
+            rhs
+        ];
+    };
+
+    this.execute = function (data, environment) {
+        var lhs = environment.operations[data[1][0]].execute(data[1], environment);
+        var rhs = environment.operations[data[2][0]].execute(data[2], environment);
+
+        return rhs.test(lhs);
+    };
+}
+;function NotOperation() {
     this.make = function (value) {
         return [
             'not',
@@ -387,6 +410,10 @@ Jsonbase.Load = function (name) {
 
     this.in = function (lhs, rhs) {
         return environment.operations.in.make(lhs, rhs);
+    };
+
+    this.like = function (lhs, rhs) {
+        return environment.operations.like.make(lhs, rhs);
     };
 
     this.execute = function (query) {

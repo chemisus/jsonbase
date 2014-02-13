@@ -27,13 +27,16 @@ function Jsonbase(environment) {
         environment.table.insert(this.file(), table_name, record);
     };
 
-    this.matches = function (table_name, values) {
+    this.matches = function (table_name, values, operations) {
+        operations = operations || {};
         var qb = this.queryBuilder();
 
         var where = [];
 
         for (var i in values) {
-            where.push(qb.eq(qb.get(i), qb.const(values[i])));
+            var operation = environment.operations[operations[i]] || qb.eq;
+
+            where.push(operation(qb.get(i), qb.const(values[i])));
         }
 
         return qb.execute(qb.select(

@@ -1,7 +1,7 @@
-function EqualOperation() {
+function LikeOperation() {
     this.make = function (lhs, rhs) {
         return [
-            'eq',
+            'like',
             lhs,
             rhs
         ];
@@ -11,6 +11,6 @@ function EqualOperation() {
         var lhs = environment.operations[data[1][0]].execute(data[1], environment);
         var rhs = environment.operations[data[2][0]].execute(data[2], environment);
 
-        return  lhs == rhs;
+        return rhs.test(lhs);
     };
 }
