@@ -1,4 +1,16 @@
-function ParameterOperation() {
+function GetOperation() {
+    this.make = function (field_name) {
+        return [
+            'get',
+            field_name
+        ];
+    };
+
+    this.execute = function (data, environment) {
+        return environment.record[data[1]];
+    };
+}
+;function ParameterOperation() {
     this.make = function (parameter_name) {
         return [
             'param',
