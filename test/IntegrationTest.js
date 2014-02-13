@@ -140,9 +140,9 @@ describe('integration test', function () {
         expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'b'}, {name: 'c'}]);
     });
 
-    it('should be able to easily query', function () {
-        var q = new Query(environment);
+    it('should be able to easily build q query', function () {
+        var qb = new QueryBuilder(environment);
 
-        expect(q.execute(q.select(q.table('users'), q.true()))).toEqual(tables.users);
+        expect(qb.execute(qb.select(qb.table('users'), qb.true()))).toEqual(tables.users);
     });
 });

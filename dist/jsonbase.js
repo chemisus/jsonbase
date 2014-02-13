@@ -264,7 +264,7 @@ function Database() {
     this.execute = function (data, environment) {
         return true;
     };
-};function Query(environment) {
+};function QueryBuilder(environment) {
     this.select = function (from, where) {
         return environment.operations.select.make(from, where);
     };
