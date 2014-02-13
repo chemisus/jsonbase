@@ -26,6 +26,15 @@ describe('integration test', function () {
         operations: ops
     };
 
+    beforeEach(function () {
+        tables.users = [
+            {name: 'a'},
+            {name: 'b'},
+            {name: 'c'},
+            {name: 'd'}
+        ];
+    });
+
     it('should be able to filter to a single record', function () {
 
         var data = ops.select.make(
@@ -60,18 +69,31 @@ describe('integration test', function () {
 
     it('should be able to filter to multiple records using and with not', function () {
 
+        tables.users = [
+            {name: 'a', type: 1},
+            {name: 'b', type: 1},
+            {name: 'c', type: 1},
+            {name: 'd', type: 2},
+            {name: 'e', type: 2},
+            {name: 'f', type: 2},
+        ];
+
         var data = ops.select.make(
             ops.table.make('users'),
             ops.and.make([
                 ops.not.make(
                     ops.eq.make(
                         ops.get.make('name'),
-                        ops.const.make('c')
+                        ops.const.make('e')
                     )
+                ),
+                ops.eq.make(
+                    ops.get.make('type'),
+                    ops.const.make(2)
                 )
             ])
         );
 
-        expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'a'}, {name: 'b'}, {name: 'd'}]);
+        expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'd', type: 2}, {name: 'f', type: 2}]);
     });
 });
