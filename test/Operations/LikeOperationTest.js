@@ -1,5 +1,6 @@
 describe('like operation', function () {
     var operation = new LikeOperation();
+    var environment_factory = new EnvironmentFactory();
 
     it('should make proper data', function () {
         var expected = ['like', 'lhs', 'rhs'];
@@ -8,12 +9,12 @@ describe('like operation', function () {
     });
 
     it('should return true if lhs is like rhs', function () {
-        var environment = {
+        var environment = environment_factory.make({}, {
             operations: {
                 lhs: jasmine.createSpyObj('lhs', ['execute']),
                 rhs: jasmine.createSpyObj('rhs', ['execute'])
             }
-        };
+        });
 
         var data = operation.make(['lhs'], ['rhs']);
 
@@ -27,12 +28,12 @@ describe('like operation', function () {
     });
 
     it('should return false if lhs is not like rhs', function () {
-        var environment = {
+        var environment = environment_factory.make({}, {
             operations: {
                 lhs: jasmine.createSpyObj('lhs', ['execute']),
                 rhs: jasmine.createSpyObj('rhs', ['execute'])
             }
-        };
+        });
 
         var data = operation.make(['lhs'], ['rhs']);
 
