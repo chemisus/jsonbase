@@ -9,15 +9,4 @@ function ParameterOperation() {
     this.execute = function (data, environment) {
         return environment.parameters[data[1]];
     };
-};function TableOperation() {
-    this.make = function (table_name) {
-        return [
-            'table',
-            table_name
-        ];
-    };
-
-    this.execute = function (data, environment) {
-        return environment.file.tables[data[1]];
-    };
 }
