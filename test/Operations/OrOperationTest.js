@@ -1,5 +1,6 @@
 describe('or operation', function () {
     var operation = new OrOperation();
+    var environment_factory = new EnvironmentFactory();
 
     it('should make proper data', function () {
         var expected = ['or', ['a', 'b']];
@@ -8,14 +9,14 @@ describe('or operation', function () {
     });
 
     it('should return true if an operation returns true', function () {
-        var environment = {
+        var environment = environment_factory.make({}, {
             operations: {
                 a: jasmine.createSpyObj('a', ['execute']),
                 b: jasmine.createSpyObj('b', ['execute']),
                 c: jasmine.createSpyObj('c', ['execute']),
                 d: jasmine.createSpyObj('d', ['execute'])
             }
-        };
+        });
 
         var values = [['a'], ['b'], ['c'], ['d']];
         var data = operation.make(values);
@@ -33,14 +34,14 @@ describe('or operation', function () {
     });
 
     it('should return false if no operation returns true', function () {
-        var environment = {
+        var environment = environment_factory.make({}, {
             operations: {
                 a: jasmine.createSpyObj('a', ['execute']),
                 b: jasmine.createSpyObj('b', ['execute']),
                 c: jasmine.createSpyObj('c', ['execute']),
                 d: jasmine.createSpyObj('d', ['execute'])
             }
-        };
+        });
 
         var values = [['a'], ['b'], ['c'], ['d']];
         var data = operation.make(values);
