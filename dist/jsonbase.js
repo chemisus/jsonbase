@@ -62,11 +62,11 @@ function Database() {
 }
 ;function Jsonbase(environment) {
     this.save = function () {
-        localStorage.setItem(environment.name, environment.toJson(environment.file));
+        localStorage.setItem(environment.name, angular.toJson(environment.file));
     };
 
     this.reload = function () {
-        environment.file = environment.fromJson(localStorage.getItem(environment.name) || 'null');
+        environment.file = angular.fromJson(localStorage.getItem(environment.name) || 'null');
     };
 
     this.environment = function () {
@@ -93,7 +93,7 @@ function Database() {
 Jsonbase.Load = function (name) {
 
     var environment_factory = new EnvironmentFactory();
-    var file = JSON.parse(localStorage.getItem(name) || 'null');
+    var file = angular.fromJson(localStorage.getItem(name) || 'null');
     var environment = environment_factory.make(file);
 
     return new Jsonbase(environment);

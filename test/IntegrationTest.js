@@ -6,8 +6,10 @@ describe('integration test', function () {
     var ops = null;
 
     beforeEach(function () {
-        environment_factory = new EnvironmentFactory();
-        jsonbase = new Jsonbase(environment_factory.make());
+//        environment_factory = new EnvironmentFactory();
+//        jsonbase = new Jsonbase(environment_factory.make());
+        jsonbase = Jsonbase.Load('test');
+
         environment = jsonbase.environment();
         ops = environment.operations;
 
