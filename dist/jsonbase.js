@@ -1,4 +1,15 @@
-function GetOperation() {
+function ConstOperation() {
+    this.make = function (value) {
+        return [
+            'const',
+            value
+        ];
+    };
+
+    this.execute = function (data, environment) {
+        return data[1];
+    };
+};function GetOperation() {
     this.make = function (field_name) {
         return [
             'get',
