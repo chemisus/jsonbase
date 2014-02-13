@@ -201,8 +201,8 @@ Jsonbase.Load = function (name) {
     };
 
     this.execute = function (data, environment) {
-        var value = environment.operations[data[1][0]].execute(data[1], environment);
-        var values = environment.operations[data[2][0]].execute(data[2], environment);
+        var value = environment.execute(data[1]);
+        var values =  environment.execute(data[2]);
 
         for (var i = 0; i < values.length; i++) {
             if (value === values[i]) {
@@ -225,8 +225,8 @@ Jsonbase.Load = function (name) {
     };
 
     this.execute = function (data, environment) {
-        var lefts = environment.operations[data[1][0]].execute(data[1], environment);
-        var rights = environment.operations[data[2][0]].execute(data[2], environment);
+        var lefts =  environment.execute(data[1]);
+        var rights =  environment.execute(data[2]);
 
         var joins = [];
 
@@ -240,7 +240,7 @@ Jsonbase.Load = function (name) {
                     right: rights[j]
                 };
 
-                if (environment.operations[data[3][0]].execute(data[3], environment)) {
+                if ( environment.execute(data[3])) {
                     results.push(rights[j]);
                 }
             }
@@ -258,13 +258,7 @@ Jsonbase.Load = function (name) {
     };
 
     this.execute = function (data, environment) {
-        environment.pushRecord(environment.left);
-
-        var result = environment.operations[data[1][0]].execute(data[1], environment);
-
-        environment.popRecord();
-
-        return result;
+        return environment.execute(data[1]);
     };
 }
 ;function LikeOperation() {

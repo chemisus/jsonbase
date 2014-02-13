@@ -10,8 +10,8 @@ function JoinOperation() {
     };
 
     this.execute = function (data, environment) {
-        var lefts = environment.operations[data[1][0]].execute(data[1], environment);
-        var rights = environment.operations[data[2][0]].execute(data[2], environment);
+        var lefts =  environment.execute(data[1]);
+        var rights =  environment.execute(data[2]);
 
         var joins = [];
 
@@ -25,7 +25,7 @@ function JoinOperation() {
                     right: rights[j]
                 };
 
-                if (environment.operations[data[3][0]].execute(data[3], environment)) {
+                if ( environment.execute(data[3])) {
                     results.push(rights[j]);
                 }
             }

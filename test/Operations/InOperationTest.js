@@ -1,5 +1,6 @@
 describe('in operation', function () {
     var operation = new InOperation();
+    var environment_factory = new EnvironmentFactory();
 
     it('should make proper data', function () {
         var expected = ['in', 'c', ['a', 'b']];
@@ -11,30 +12,30 @@ describe('in operation', function () {
         var value = ['value'];
         var array = ['array'];
         var data = operation.make(value, array);
-        var environment = {
+        var environment = environment_factory.make({}, {
             operations: {
                 value: jasmine.createSpyObj('value', ['execute']),
                 array: jasmine.createSpyObj('array', ['execute'])
             }
-        };
+        });
 
         environment.operations.value.execute.andReturn('2');
         environment.operations.array.execute.andReturn(['1', '2', '3']);
 
         expect(operation.execute(data, environment)).toBeTruthy();
     });
-
+    
     it('should return false if the value does not exist in the array', function () {
         var value = ['value'];
-        var array = ['array'];
 
+        var array = ['array'];
         var data = operation.make(value, array);
-        var environment = {
+        var environment = environment_factory.make({}, {
             operations: {
                 value: jasmine.createSpyObj('value', ['execute']),
                 array: jasmine.createSpyObj('array', ['execute'])
             }
-        };
+        });
 
         environment.operations.value.execute.andReturn('5');
         environment.operations.array.execute.andReturn(['1', '2', '3']);

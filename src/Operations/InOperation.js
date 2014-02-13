@@ -8,8 +8,8 @@ function InOperation() {
     };
 
     this.execute = function (data, environment) {
-        var value = environment.operations[data[1][0]].execute(data[1], environment);
-        var values = environment.operations[data[2][0]].execute(data[2], environment);
+        var value = environment.execute(data[1]);
+        var values =  environment.execute(data[2]);
 
         for (var i = 0; i < values.length; i++) {
             if (value === values[i]) {
