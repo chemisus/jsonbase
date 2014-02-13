@@ -133,4 +133,19 @@ describe('integration test', function () {
 
         expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'b'}, {name: 'c'}]);
     });
+
+    it('should work with in and a sub select', function () {
+        var data = ops.select.make(
+            ops.table.make('users'),
+            ops.in.make(
+                ops.get.make('name'),
+                ops.select.make(
+                    ops.const.make(['b', 'c']),
+                    ops.true.make()
+                )
+            )
+        );
+
+        expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'b'}, {name: 'c'}]);
+    });
 });
