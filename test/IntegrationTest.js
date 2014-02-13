@@ -1,21 +1,22 @@
 describe('integration test', function () {
 
-    var tables = {
-        keys: ['users'],
-        values: {
-            users: [
-                {name: 'a'},
-                {name: 'b'},
-                {name: 'c'},
-                {name: 'd'}
-            ]
-        }
-    };
+    var environment_factory = null;
+    var jsonbase = null;
+    var environment = null;
+    var ops = null;
 
-    var environment_factory = new EnvironmentFactory();
-    var jsonbase = new Jsonbase(environment_factory.make({tables: tables}));
-    var environment = jsonbase.environment();
-    var ops = environment.operations;
+    beforeEach(function () {
+        environment_factory = new EnvironmentFactory();
+        jsonbase = new Jsonbase(environment_factory.make());
+        environment = jsonbase.environment();
+        ops = environment.operations;
+
+        jsonbase.createTable('users');
+        jsonbase.insert('users', {name: 'a'});
+        jsonbase.insert('users', {name: 'b'});
+        jsonbase.insert('users', {name: 'c'});
+        jsonbase.insert('users', {name: 'd'});
+    });
 
     it('should be able to filter to a single record', function () {
 
@@ -158,6 +159,6 @@ describe('integration test', function () {
     it('should be able to easily build a query', function () {
         var qb = jsonbase.queryBuilder();
 
-        expect(qb.execute(qb.select(qb.table('users'), qb.true()))).toEqual(tables.values.users);
+        expect(qb.execute(qb.select(qb.table('users'), qb.true()))).toEqual(environment.file.tables.values.users);
     });
 });

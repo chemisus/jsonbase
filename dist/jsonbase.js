@@ -3,6 +3,17 @@ function Database() {
 }
 ;function EnvironmentFactory() {
     this.make = function (file, options) {
+        file = file || {
+            constraints: {
+                keys: [],
+                values: {}
+            },
+            tables: {
+                keys: [],
+                values: {}
+            }
+        };
+
         options = options || {};
 
         var environment = {
@@ -82,16 +93,7 @@ function Database() {
 Jsonbase.Load = function (name) {
 
     var environment_factory = new EnvironmentFactory();
-    var file = JSON.parse(localStorage.getItem(name) || 'null') || {
-        constraints: {
-            keys: [],
-            values: {}
-        },
-        tables: {
-            keys: [],
-            values: {}
-        }
-    };
+    var file = JSON.parse(localStorage.getItem(name) || 'null');
     var environment = environment_factory.make(file);
 
     return new Jsonbase(environment);

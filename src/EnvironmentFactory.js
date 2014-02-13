@@ -1,5 +1,16 @@
 function EnvironmentFactory() {
     this.make = function (file, options) {
+        file = file || {
+            constraints: {
+                keys: [],
+                values: {}
+            },
+            tables: {
+                keys: [],
+                values: {}
+            }
+        };
+
         options = options || {};
 
         var environment = {

@@ -31,16 +31,7 @@ function Jsonbase(environment) {
 Jsonbase.Load = function (name) {
 
     var environment_factory = new EnvironmentFactory();
-    var file = JSON.parse(localStorage.getItem(name) || 'null') || {
-        constraints: {
-            keys: [],
-            values: {}
-        },
-        tables: {
-            keys: [],
-            values: {}
-        }
-    };
+    var file = JSON.parse(localStorage.getItem(name) || 'null');
     var environment = environment_factory.make(file);
 
     return new Jsonbase(environment);
