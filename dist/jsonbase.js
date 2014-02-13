@@ -1,4 +1,22 @@
-function ConstOperation() {
+function AndOperation() {
+    this.make = function (operations) {
+        return [
+            'and',
+            operations
+        ];
+    };
+
+    this.execute = function (data, environment) {
+        for (var i = 0; i < data[1].length; i++) {
+            if (!environment.operations[data[1][i][0]].execute(data[1][i], environment)) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+}
+;function ConstOperation() {
     this.make = function (value) {
         return [
             'const',
@@ -32,6 +50,18 @@ function ConstOperation() {
 
     this.execute = function (data, environment) {
         return environment.record[data[1]];
+    };
+}
+;function NotOperation() {
+    this.make = function (value) {
+        return [
+            'not',
+            value
+        ];
+    };
+
+    this.execute = function (data, environment) {
+        return !environment.operations[data[1][0]].execute(data[1], environment);
     };
 }
 ;function OrOperation() {
