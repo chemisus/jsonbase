@@ -26,6 +26,21 @@ function Jsonbase(environment) {
     this.insert = function (table_name, record) {
         environment.table.insert(this.file(), table_name, record);
     };
+
+    this.matches = function (table_name, values) {
+        var qb = this.queryBuilder();
+
+        var where = [];
+
+        for (var i in values) {
+            where.push(qb.eq(qb.get(i), qb.const(values[i])));
+        }
+
+        return qb.execute(qb.select(
+            qb.table(table_name),
+            qb.and(where)
+        ));
+    };
 }
 
 Jsonbase.Load = function (name) {

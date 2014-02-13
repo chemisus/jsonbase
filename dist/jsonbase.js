@@ -54,7 +54,8 @@ function Database() {
             not: new NotOperation(),
             true: new TrueOperation(),
             in: new InOperation(),
-            path: new PathOperation()
+            path: new PathOperation(),
+            param: new ParameterOperation()
         };
     };
 
@@ -100,6 +101,21 @@ function Database() {
 
     this.insert = function (table_name, record) {
         environment.table.insert(this.file(), table_name, record);
+    };
+
+    this.matches = function (table_name, values) {
+        var qb = this.queryBuilder();
+
+        var where = [];
+
+        for (var i in values) {
+            where.push(qb.eq(qb.get(i), qb.const(values[i])));
+        }
+
+        return qb.execute(qb.select(
+            qb.table(table_name),
+            qb.and(where)
+        ));
     };
 }
 
@@ -337,8 +353,16 @@ Jsonbase.Load = function (name) {
         return environment.operations.get.make(value);
     };
 
+    this.path = function (value) {
+        return environment.operations.path.make(value);
+    };
+
     this.const = function (value) {
         return environment.operations.const.make(value);
+    };
+
+    this.not = function (value) {
+        return environment.operations.not.make(value);
     };
 
     this.eq = function (lhs, rhs) {
@@ -347,6 +371,22 @@ Jsonbase.Load = function (name) {
 
     this.true = function () {
         return environment.operations.true.make();
+    };
+
+    this.param = function (value) {
+        return environment.operations.param.make(value);
+    };
+
+    this.and = function (values) {
+        return environment.operations.and.make(values);
+    };
+
+    this.or = function (values) {
+        return environment.operations.or.make(values);
+    };
+
+    this.in = function (lhs, rhs) {
+        return environment.operations.in.make(lhs, rhs);
     };
 
     this.execute = function (query) {

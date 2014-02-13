@@ -11,8 +11,16 @@ function QueryBuilder(environment) {
         return environment.operations.get.make(value);
     };
 
+    this.path = function (value) {
+        return environment.operations.path.make(value);
+    };
+
     this.const = function (value) {
         return environment.operations.const.make(value);
+    };
+
+    this.not = function (value) {
+        return environment.operations.not.make(value);
     };
 
     this.eq = function (lhs, rhs) {
@@ -21,6 +29,22 @@ function QueryBuilder(environment) {
 
     this.true = function () {
         return environment.operations.true.make();
+    };
+
+    this.param = function (value) {
+        return environment.operations.param.make(value);
+    };
+
+    this.and = function (values) {
+        return environment.operations.and.make(values);
+    };
+
+    this.or = function (values) {
+        return environment.operations.or.make(values);
+    };
+
+    this.in = function (lhs, rhs) {
+        return environment.operations.in.make(lhs, rhs);
     };
 
     this.execute = function (query) {

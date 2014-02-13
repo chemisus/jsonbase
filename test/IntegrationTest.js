@@ -163,4 +163,8 @@ describe('integration test', function () {
 
         expect(qb.execute(qb.select(qb.table('users'), qb.true()))).toEqual(environment.file.tables.values.users);
     });
+
+    it('should be able to query for matches of an object', function () {
+        expect(jsonbase.matches('users', {name: 'b'})).toEqual([{name: 'b'}]);
+    });
 });

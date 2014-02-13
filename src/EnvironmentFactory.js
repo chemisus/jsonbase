@@ -51,7 +51,8 @@ function EnvironmentFactory(toJson, fromJson) {
             not: new NotOperation(),
             true: new TrueOperation(),
             in: new InOperation(),
-            path: new PathOperation()
+            path: new PathOperation(),
+            param: new ParameterOperation()
         };
     };
 
