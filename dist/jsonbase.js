@@ -9,7 +9,28 @@ function ParameterOperation() {
     this.execute = function (data, environment) {
         return environment.parameters[data[1]];
     };
-};function TableOperation() {
+};function SelectOperation() {
+    this.make = function (from, where) {
+        return [
+            'select',
+            from,
+            where
+        ];
+    };
+
+    this.execute = function (data, environment) {
+        var records = environment.operations[data[1][0]].execute(data[1], environment).filter(function (record) {
+            environment.record = record;
+
+            return environment.operations[data[2][0]].execute(data[2], environment);
+        });
+
+        environment.record = null;
+
+        return records;
+    };
+}
+;function TableOperation() {
     this.make = function (table_name) {
         return [
             'table',
