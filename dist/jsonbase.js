@@ -1,6 +1,11 @@
 function Database() {
 
 }
+;function Environment() {
+    this.execute = function (data) {
+        return this.operations[data[0]].execute(data, this);
+    };
+}
 ;function EnvironmentFactory(toJson, fromJson) {
     toJson = toJson || JSON.stringify;
     fromJson = fromJson || JSON.parse;
@@ -158,12 +163,7 @@ Jsonbase.Load = function (name) {
     this.execute = function (data, environment) {
         return data[1];
     };
-};function Environment() {
-    this.execute = function (data) {
-        return this.operations[data[0]].execute(data, this);
-    };
-}
-;function EqualOperation() {
+};function EqualOperation() {
     this.make = function (lhs, rhs) {
         return [
             'eq',
