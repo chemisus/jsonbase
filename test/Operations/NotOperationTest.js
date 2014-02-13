@@ -1,5 +1,6 @@
 describe('not operation', function () {
     var operation = new NotOperation();
+    var environment_factory = new EnvironmentFactory();
 
     it('should make proper data', function () {
         var expected = ['not', 'a'];
@@ -8,11 +9,11 @@ describe('not operation', function () {
     });
 
     it('should "not" the value', function () {
-        var environment = {
+        var environment = environment_factory.make({}, {
             operations: {
                 true: new TrueOperation()
             }
-        };
+        });
 
         var data = operation.make(['true']);
 
