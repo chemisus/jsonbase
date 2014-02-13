@@ -27,15 +27,6 @@ describe('integration test', function () {
         operations: ops
     };
 
-    beforeEach(function () {
-        tables.users = [
-            {name: 'a'},
-            {name: 'b'},
-            {name: 'c'},
-            {name: 'd'}
-        ];
-    });
-
     it('should be able to filter to a single record', function () {
 
         var data = ops.select.make(
@@ -70,7 +61,7 @@ describe('integration test', function () {
 
     it('should be able to filter to multiple records using and with not', function () {
 
-        tables.users = [
+        var users =  [
             {name: 'a', type: 1},
             {name: 'b', type: 1},
             {name: 'c', type: 1},
@@ -80,7 +71,7 @@ describe('integration test', function () {
         ];
 
         var data = ops.select.make(
-            ops.table.make('users'),
+            ops.const.make(users),
             ops.and.make([
                 ops.not.make(
                     ops.eq.make(
@@ -99,7 +90,7 @@ describe('integration test', function () {
     });
 
     it('should be able to do a subquery', function () {
-        tables.users = [
+        var users = [
             {name: 'a', type: 1},
             {name: 'b', type: 1},
             {name: 'c', type: 1},
@@ -110,7 +101,7 @@ describe('integration test', function () {
 
         var data = ops.select.make(
             ops.select.make(
-                ops.table.make('users'),
+                ops.const.make(users),
                 ops.true.make()
             ),
             ops.and.make([
