@@ -1,7 +1,18 @@
 function Database() {
 
 }
-;function EnvironmentFactory() {
+;function EnvironmentFactory(toJson, fromJson) {
+    toJson = toJson || JSON.stringify;
+    fromJson = fromJson || JSON.parse;
+
+    this.toJson = function () {
+        return toJson;
+    };
+
+    this.fromJson = function () {
+        return fromJson;
+    };
+
     this.make = function (file, options) {
         file = file || {
             constraints: {
@@ -21,7 +32,9 @@ function Database() {
             operations: options.operations || this.makeOperations(),
             constraints: options.constraints || this.makeConstraints(),
             database: options.database || this.makeDatabase(),
-            table: options.table || this.makeTable()
+            table: options.table || this.makeTable(),
+            toJson: toJson,
+            fromJson: fromJson
         };
 
         environment.query_builder = this.makeQueryBuilder(environment);
@@ -62,11 +75,11 @@ function Database() {
 }
 ;function Jsonbase(environment) {
     this.save = function () {
-        localStorage.setItem(environment.name, angular.toJson(environment.file));
+        localStorage.setItem(environment.name, environment.toJson(environment.file));
     };
 
     this.reload = function () {
-        environment.file = angular.fromJson(localStorage.getItem(environment.name) || 'null');
+        environment.file = environment.fromJson(localStorage.getItem(environment.name) || 'null');
     };
 
     this.environment = function () {
@@ -91,9 +104,8 @@ function Database() {
 }
 
 Jsonbase.Load = function (name) {
-
     var environment_factory = new EnvironmentFactory();
-    var file = angular.fromJson(localStorage.getItem(name) || 'null');
+    var file = environment_factory.fromJson()(localStorage.getItem(name) || 'null');
     var environment = environment_factory.make(file);
 
     return new Jsonbase(environment);

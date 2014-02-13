@@ -1,10 +1,10 @@
 function Jsonbase(environment) {
     this.save = function () {
-        localStorage.setItem(environment.name, angular.toJson(environment.file));
+        localStorage.setItem(environment.name, environment.toJson(environment.file));
     };
 
     this.reload = function () {
-        environment.file = angular.fromJson(localStorage.getItem(environment.name) || 'null');
+        environment.file = environment.fromJson(localStorage.getItem(environment.name) || 'null');
     };
 
     this.environment = function () {
@@ -29,9 +29,8 @@ function Jsonbase(environment) {
 }
 
 Jsonbase.Load = function (name) {
-
     var environment_factory = new EnvironmentFactory();
-    var file = angular.fromJson(localStorage.getItem(name) || 'null');
+    var file = environment_factory.fromJson()(localStorage.getItem(name) || 'null');
     var environment = environment_factory.make(file);
 
     return new Jsonbase(environment);

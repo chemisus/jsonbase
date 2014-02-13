@@ -1,4 +1,15 @@
-function EnvironmentFactory() {
+function EnvironmentFactory(toJson, fromJson) {
+    toJson = toJson || JSON.stringify;
+    fromJson = fromJson || JSON.parse;
+
+    this.toJson = function () {
+        return toJson;
+    };
+
+    this.fromJson = function () {
+        return fromJson;
+    };
+
     this.make = function (file, options) {
         file = file || {
             constraints: {
@@ -18,7 +29,9 @@ function EnvironmentFactory() {
             operations: options.operations || this.makeOperations(),
             constraints: options.constraints || this.makeConstraints(),
             database: options.database || this.makeDatabase(),
-            table: options.table || this.makeTable()
+            table: options.table || this.makeTable(),
+            toJson: toJson,
+            fromJson: fromJson
         };
 
         environment.query_builder = this.makeQueryBuilder(environment);
