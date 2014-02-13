@@ -167,4 +167,40 @@ describe('integration test', function () {
     it('should be able to query for matches of an object', function () {
         expect(jsonbase.matches('users', {name: 'b'})).toEqual([{name: 'b'}]);
     });
+
+    it('should be able to join', function () {
+        var lefts = [
+            {id: 1},
+            {id: 2},
+            {id: 3}
+        ];
+
+        var rights = [
+            {id: 1, left: 1},
+            {id: 2, left: 1},
+            {id: 3, left: 2},
+        ];
+
+        var qb = jsonbase.queryBuilder();
+
+        expect(qb.execute(qb.join(
+            qb.const(lefts),
+            qb.const(rights),
+            qb.eq(
+                qb.right(qb.get('left')),
+                qb.left(qb.get('id'))
+            ),
+            'rights'
+        ))).toEqual([
+                {id: 1, rights: [
+                    {id: 1, left: 1},
+                    {id: 2, left: 1},
+                ]},
+                {id: 2, rights: [
+                    {id: 3, left: 2},
+                ]},
+                {id: 3, rights: []},
+            ]);
+
+    });
 });

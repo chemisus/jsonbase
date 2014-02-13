@@ -5,6 +5,36 @@ function Database() {
     this.execute = function (data) {
         return this.operations[data[0]].execute(data, this);
     };
+
+    this.pushRecord = function (record) {
+        this.records.push(this.record);
+
+        this.record = record;
+    };
+
+    this.popRecord = function () {
+        this.record = this.records.pop();
+    };
+
+    this.pushLeft = function (record) {
+        this.lefts.push(this.left);
+
+        this.left = record;
+    };
+
+    this.popLeft = function () {
+        this.left = this.lefts.pop();
+    };
+
+    this.pushRight = function (record) {
+        this.rights.push(this.right);
+
+        this.right = record;
+    };
+
+    this.popRight = function () {
+        this.right = this.rights.pop();
+    };
 }
 ;function EnvironmentFactory(toJson, fromJson) {
     toJson = toJson || JSON.stringify;
@@ -42,6 +72,12 @@ function Database() {
         environment.toJson = toJson;
         environment.fromJson = fromJson;
         environment.query_builder = this.makeQueryBuilder(environment);
+        environment.record = null;
+        environment.left = null;
+        environment.right = null;
+        environment.records = [];
+        environment.lefts = [];
+        environment.rights = [];
 
         return environment;
     };
@@ -60,6 +96,9 @@ function Database() {
             in: new InOperation(),
             path: new PathOperation(),
             like: new LikeOperation(),
+            left: new LeftOperation(),
+            right: new RightOperation(),
+            join: new JoinOperation(),
             param: new ParameterOperation()
         };
     };
@@ -224,33 +263,46 @@ Jsonbase.Load = function (name) {
         ];
     };
 
-    this.execute = function (data, environment) {
-        var lefts =  environment.execute(data[1]);
-        var rights =  environment.execute(data[2]);
+    this.clone = function (value) {
+        var cloned = {};
 
-        var joins = [];
-
-        for (var i = 0; i < lefts.length; i++) {
-            var left = Object.create(lefts[i]);
-            left[data[4]] = [];
-
-            for (var j = 0; j < rights.length; j++) {
-                environment.record = {
-                    left: lefts[i],
-                    right: rights[j]
-                };
-
-                if ( environment.execute(data[3])) {
-                    results.push(rights[j]);
-                }
-            }
-
-            left[data[4]] = results;
-
-            joins.push(left);
+        for (var k in value) {
+            cloned[k] = value[k];
         }
 
-        return joins;
+        return cloned;
+    };
+
+    this.execute = function (data, environment) {
+        var lefts = environment.execute(data[1]);
+        var rights = environment.execute(data[2]);
+
+        var results = [];
+
+        for (var i = 0; i < lefts.length; i++) {
+            var left = this.clone(lefts[i]);
+            left[data[4]] = [];
+
+            environment.pushLeft(left);
+
+            for (var j = 0; j < rights.length; j++) {
+                var right = this.clone(rights[j]);
+
+                environment.pushRight(right);
+
+                if (environment.execute(data[3])) {
+                    left[data[4]].push(right);
+                }
+
+                environment.popRight();
+            }
+
+            environment.popLeft();
+
+            results.push(left);
+        }
+
+        return results;
     };
 };function LeftOperation() {
     this.make = function (value) {
@@ -258,7 +310,13 @@ Jsonbase.Load = function (name) {
     };
 
     this.execute = function (data, environment) {
-        return environment.execute(data[1]);
+        environment.pushRecord(environment.left);
+
+        var result = environment.execute(data[1]);
+
+        environment.popRecord();
+
+        return result;
     };
 }
 ;function LikeOperation() {
@@ -341,7 +399,22 @@ Jsonbase.Load = function (name) {
 
         return result;
     };
-};function SelectOperation() {
+};function RightOperation() {
+    this.make = function (value) {
+        return ['right', value];
+    };
+
+    this.execute = function (data, environment) {
+        environment.pushRecord(environment.right);
+
+        var result = environment.execute(data[1]);
+
+        environment.popRecord();
+
+        return result;
+    };
+}
+;function SelectOperation() {
     this.make = function (from, where) {
         return [
             'select',
@@ -432,6 +505,18 @@ Jsonbase.Load = function (name) {
 
     this.like = function (lhs, rhs) {
         return environment.operations.like.make(lhs, rhs);
+    };
+
+    this.join = function (left, right, on, as) {
+        return environment.operations.join.make(left, right, on, as);
+    };
+
+    this.left = function (value) {
+        return environment.operations.left.make(value);
+    };
+
+    this.right = function (value) {
+        return environment.operations.right.make(value);
     };
 
     this.execute = function (query) {

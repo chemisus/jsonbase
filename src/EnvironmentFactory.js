@@ -34,6 +34,12 @@ function EnvironmentFactory(toJson, fromJson) {
         environment.toJson = toJson;
         environment.fromJson = fromJson;
         environment.query_builder = this.makeQueryBuilder(environment);
+        environment.record = null;
+        environment.left = null;
+        environment.right = null;
+        environment.records = [];
+        environment.lefts = [];
+        environment.rights = [];
 
         return environment;
     };
@@ -52,6 +58,9 @@ function EnvironmentFactory(toJson, fromJson) {
             in: new InOperation(),
             path: new PathOperation(),
             like: new LikeOperation(),
+            left: new LeftOperation(),
+            right: new RightOperation(),
+            join: new JoinOperation(),
             param: new ParameterOperation()
         };
     };

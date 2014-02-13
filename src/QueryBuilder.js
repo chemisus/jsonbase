@@ -51,6 +51,18 @@ function QueryBuilder(environment) {
         return environment.operations.like.make(lhs, rhs);
     };
 
+    this.join = function (left, right, on, as) {
+        return environment.operations.join.make(left, right, on, as);
+    };
+
+    this.left = function (value) {
+        return environment.operations.left.make(value);
+    };
+
+    this.right = function (value) {
+        return environment.operations.right.make(value);
+    };
+
     this.execute = function (query) {
         return environment.operations[query[0]].execute(query, environment);
     };

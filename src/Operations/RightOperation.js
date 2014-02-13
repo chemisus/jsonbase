@@ -1,10 +1,10 @@
-function LeftOperation() {
+function RightOperation() {
     this.make = function (value) {
-        return ['left', value];
+        return ['right', value];
     };
 
     this.execute = function (data, environment) {
-        environment.pushRecord(environment.left);
+        environment.pushRecord(environment.right);
 
         var result = environment.execute(data[1]);
 
