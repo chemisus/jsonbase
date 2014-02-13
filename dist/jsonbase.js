@@ -10,7 +10,7 @@ function Database() {
             operations: options.operations || this.makeOperations(),
             constraints: options.constraints || this.makeConstraints(),
             database: options.database || this.makeDatabase(),
-            table: options.table || this.makeTable(),
+            table: options.table || this.makeTable()
         };
 
         environment.query_builder = this.makeQueryBuilder(environment);
@@ -54,7 +54,7 @@ function Database() {
         localStorage.setItem(environment.name, environment.toJson(environment.file));
     };
 
-    this.load = function () {
+    this.reload = function () {
         environment.file = environment.fromJson(localStorage.getItem(environment.name) || 'null');
     };
 
@@ -65,7 +65,29 @@ function Database() {
     this.queryBuilder = function () {
         return environment.query_builder;
     };
+
+    this.createTable = function (name) {
+        environment.table.addTable(environment.file, name);
+    };
 }
+
+Jsonbase.Load = function (name) {
+
+    var environment_factory = new EnvironmentFactory();
+    var file = JSON.parse(localStorage.getItem(name) || 'null') || {
+        constraints: {
+            keys: [],
+            values: {}
+        },
+        tables: {
+            keys: [],
+            values: {}
+        }
+    };
+    var environment = environment_factory.make(file);
+
+    return new Jsonbase(environment);
+};
 ;function AndOperation() {
     this.make = function (operations) {
         return [
@@ -270,7 +292,7 @@ function Database() {
     };
 
     this.execute = function (data, environment) {
-        return environment.file.tables[data[1]];
+        return environment.file.tables.values[data[1]];
     };
 };function TrueOperation() {
     this.make = function () {
@@ -298,5 +320,8 @@ function Database() {
     };
 }
 ;function Table() {
-
+    this.addTable = function (file, name) {
+        file.tables.keys.push(name);
+        file.tables.values[name] = [];
+    };
 }

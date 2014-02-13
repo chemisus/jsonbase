@@ -7,7 +7,7 @@ function EnvironmentFactory() {
             operations: options.operations || this.makeOperations(),
             constraints: options.constraints || this.makeConstraints(),
             database: options.database || this.makeDatabase(),
-            table: options.table || this.makeTable(),
+            table: options.table || this.makeTable()
         };
 
         environment.query_builder = this.makeQueryBuilder(environment);

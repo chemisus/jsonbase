@@ -7,6 +7,6 @@ function TableOperation() {
     };
 
     this.execute = function (data, environment) {
-        return environment.file.tables[data[1]];
+        return environment.file.tables.values[data[1]];
     };
 }

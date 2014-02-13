@@ -1,19 +1,21 @@
 describe('integration test', function () {
 
     var tables = {
-        users: [
-            {name: 'a'},
-            {name: 'b'},
-            {name: 'c'},
-            {name: 'd'}
-        ]
+        keys: ['users'],
+        values: {
+            users: [
+                {name: 'a'},
+                {name: 'b'},
+                {name: 'c'},
+                {name: 'd'}
+            ]
+        }
     };
 
     var environment_factory = new EnvironmentFactory();
     var jsonbase = new Jsonbase(environment_factory.make({tables: tables}));
     var environment = jsonbase.environment();
     var ops = environment.operations;
-
 
     it('should be able to filter to a single record', function () {
 
@@ -25,7 +27,9 @@ describe('integration test', function () {
             )
         );
 
-        expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'b'}]);
+        expect(ops[data[0]].execute(data, environment)).toEqual([
+            {name: 'b'}
+        ]);
     });
 
     it('should be able to filter to multiple records using or', function () {
@@ -44,12 +48,15 @@ describe('integration test', function () {
             ])
         );
 
-        expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'b'}, {name: 'c'}]);
+        expect(ops[data[0]].execute(data, environment)).toEqual([
+            {name: 'b'},
+            {name: 'c'}
+        ]);
     });
 
     it('should be able to filter to multiple records using and with not', function () {
 
-        var users =  [
+        var users = [
             {name: 'a', type: 1},
             {name: 'b', type: 1},
             {name: 'c', type: 1},
@@ -74,7 +81,10 @@ describe('integration test', function () {
             ])
         );
 
-        expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'd', type: 2}, {name: 'f', type: 2}]);
+        expect(ops[data[0]].execute(data, environment)).toEqual([
+            {name: 'd', type: 2},
+            {name: 'f', type: 2}
+        ]);
     });
 
     it('should be able to do a subquery', function () {
@@ -106,7 +116,10 @@ describe('integration test', function () {
             ])
         );
 
-        expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'd', type: 2}, {name: 'f', type: 2}]);
+        expect(ops[data[0]].execute(data, environment)).toEqual([
+            {name: 'd', type: 2},
+            {name: 'f', type: 2}
+        ]);
     });
 
     it('should work with in', function () {
@@ -118,7 +131,10 @@ describe('integration test', function () {
             )
         );
 
-        expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'b'}, {name: 'c'}]);
+        expect(ops[data[0]].execute(data, environment)).toEqual([
+            {name: 'b'},
+            {name: 'c'}
+        ]);
     });
 
     it('should work with in and a sub select', function () {
@@ -133,12 +149,15 @@ describe('integration test', function () {
             )
         );
 
-        expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'b'}, {name: 'c'}]);
+        expect(ops[data[0]].execute(data, environment)).toEqual([
+            {name: 'b'},
+            {name: 'c'}
+        ]);
     });
 
-    it('should be able to easily build q query', function () {
-        var qb = new QueryBuilder(environment);
+    it('should be able to easily build a query', function () {
+        var qb = jsonbase.queryBuilder();
 
-        expect(qb.execute(qb.select(qb.table('users'), qb.true()))).toEqual(tables.users);
+        expect(qb.execute(qb.select(qb.table('users'), qb.true()))).toEqual(tables.values.users);
     });
 });

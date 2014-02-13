@@ -10,7 +10,7 @@ describe('table operation', function () {
     it('should return all the records in a table', function () {
         var users = ['a', 'b', 'c'];
         var data = operation.make("users");
-        var environment = {file: {tables: {users: users}}};
+        var environment = {file: {tables: {keys: ['users'], values: {users: users}}}};
 
         expect(operation.execute(data, environment)).toBe(users);
     });
