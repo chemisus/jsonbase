@@ -8,31 +8,36 @@ describe('in operation', function () {
     });
 
     it('should return true if the value exists in the array', function () {
-        var value = ['a'];
-        var array = ['1', '2', '3'];
+        var value = ['value'];
+        var array = ['array'];
         var data = operation.make(value, array);
         var environment = {
             operations: {
-                a: jasmine.createSpyObj('a', ['execute'])
+                value: jasmine.createSpyObj('value', ['execute']),
+                array: jasmine.createSpyObj('array', ['execute'])
             }
         };
 
-        environment.operations.a.execute.andReturn('2');
+        environment.operations.value.execute.andReturn('2');
+        environment.operations.array.execute.andReturn(['1', '2', '3']);
 
         expect(operation.execute(data, environment)).toBeTruthy();
     });
 
     it('should return false if the value does not exist in the array', function () {
-        var value = ['a'];
-        var array = ['1', '2', '3'];
+        var value = ['value'];
+        var array = ['array'];
+
         var data = operation.make(value, array);
         var environment = {
             operations: {
-                a: jasmine.createSpyObj('a', ['execute'])
+                value: jasmine.createSpyObj('value', ['execute']),
+                array: jasmine.createSpyObj('array', ['execute'])
             }
         };
 
-        environment.operations.a.execute.andReturn('5');
+        environment.operations.value.execute.andReturn('5');
+        environment.operations.array.execute.andReturn(['1', '2', '3']);
 
         expect(operation.execute(data, environment)).toBeFalsy();
     });

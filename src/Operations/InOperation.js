@@ -9,9 +9,10 @@ function InOperation() {
 
     this.execute = function (data, environment) {
         var value = environment.operations[data[1][0]].execute(data[1], environment);
+        var values = environment.operations[data[2][0]].execute(data[2], environment);
 
-        for (var i = 0; i < data[2].length; i++) {
-            if (value === data[2][i]) {
+        for (var i = 0; i < values.length; i++) {
+            if (value === values[i]) {
                 return true;
             }
         }

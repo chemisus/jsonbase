@@ -17,7 +17,8 @@ describe('integration test', function () {
         or: new OrOperation(),
         and: new AndOperation(),
         not: new NotOperation(),
-        true: new TrueOperation()
+        true: new TrueOperation(),
+        in: new InOperation()
     };
 
     var environment = {
@@ -119,5 +120,17 @@ describe('integration test', function () {
         );
 
         expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'd', type: 2}, {name: 'f', type: 2}]);
+    });
+
+    it('should work with in', function () {
+        var data = ops.select.make(
+            ops.table.make('users'),
+            ops.in.make(
+                ops.get.make('name'),
+                ops.const.make(['b', 'c'])
+            )
+        );
+
+        expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'b'}, {name: 'c'}]);
     });
 });
