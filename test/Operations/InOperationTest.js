@@ -24,7 +24,7 @@ describe('in operation', function () {
 
         expect(operation.execute(data, environment)).toBeTruthy();
     });
-    
+
     it('should return false if the value does not exist in the array', function () {
         var value = ['value'];
 

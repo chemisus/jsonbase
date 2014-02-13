@@ -1,5 +1,6 @@
 describe('equal operation', function () {
     var operation = new EqualOperation();
+    var environment_factory = new EnvironmentFactory();
 
     it('should make proper data', function () {
         var expected = ['eq', 'lhs', 'rhs'];
@@ -8,12 +9,12 @@ describe('equal operation', function () {
     });
 
     it('should return true if the values are equal', function () {
-        var environment = {
+        var environment = environment_factory.make({}, {
             operations: {
                 lhs: jasmine.createSpyObj('lhs', ['execute']),
                 rhs: jasmine.createSpyObj('rhs', ['execute'])
             }
-        };
+        });
 
         var data = operation.make(['lhs'], ['rhs']);
 
@@ -27,12 +28,12 @@ describe('equal operation', function () {
     });
 
     it('should return false if the values are not equal', function () {
-        var environment = {
+        var environment = environment_factory.make({}, {
             operations: {
                 lhs: jasmine.createSpyObj('lhs', ['execute']),
                 rhs: jasmine.createSpyObj('rhs', ['execute'])
             }
-        };
+        });
 
         var data = operation.make(['lhs'], ['rhs']);
 
