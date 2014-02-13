@@ -20,4 +20,12 @@ function ParameterOperation() {
     this.execute = function (data, environment) {
         return environment.file.tables[data[1]];
     };
+};function TrueOperation() {
+    this.make = function () {
+        return ['true'];
+    };
+
+    this.execute = function (data, environment) {
+        return true;
+    };
 }
