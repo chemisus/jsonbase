@@ -24,16 +24,15 @@ function EnvironmentFactory(toJson, fromJson) {
 
         options = options || {};
 
-        var environment = {
-            file: file,
-            operations: options.operations || this.makeOperations(),
-            constraints: options.constraints || this.makeConstraints(),
-            database: options.database || this.makeDatabase(),
-            table: options.table || this.makeTable(),
-            toJson: toJson,
-            fromJson: fromJson
-        };
+        var environment = new Environment();
 
+        environment.file = file;
+        environment.operations = options.operations || this.makeOperations();
+        environment.constraints = options.constraints || this.makeConstraints();
+        environment.database = options.database || this.makeDatabase();
+        environment.table = options.table || this.makeTable();
+        environment.toJson = toJson;
+        environment.fromJson = fromJson;
         environment.query_builder = this.makeQueryBuilder(environment);
 
         return environment;

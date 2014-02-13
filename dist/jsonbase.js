@@ -27,16 +27,15 @@ function Database() {
 
         options = options || {};
 
-        var environment = {
-            file: file,
-            operations: options.operations || this.makeOperations(),
-            constraints: options.constraints || this.makeConstraints(),
-            database: options.database || this.makeDatabase(),
-            table: options.table || this.makeTable(),
-            toJson: toJson,
-            fromJson: fromJson
-        };
+        var environment = new Environment();
 
+        environment.file = file;
+        environment.operations = options.operations || this.makeOperations();
+        environment.constraints = options.constraints || this.makeConstraints();
+        environment.database = options.database || this.makeDatabase();
+        environment.table = options.table || this.makeTable();
+        environment.toJson = toJson;
+        environment.fromJson = fromJson;
         environment.query_builder = this.makeQueryBuilder(environment);
 
         return environment;
@@ -159,7 +158,12 @@ Jsonbase.Load = function (name) {
     this.execute = function (data, environment) {
         return data[1];
     };
-};function EqualOperation() {
+};function Environment() {
+    this.execute = function (data) {
+        return this.operations[data[0]].execute(data, this);
+    };
+}
+;function EqualOperation() {
     this.make = function (lhs, rhs) {
         return [
             'eq',
@@ -248,7 +252,22 @@ Jsonbase.Load = function (name) {
 
         return joins;
     };
-};function LikeOperation() {
+};function LeftOperation() {
+    this.make = function (value) {
+        return ['left', value];
+    };
+
+    this.execute = function (data, environment) {
+        environment.pushRecord(environment.left);
+
+        var result = environment.operations[data[1][0]].execute(data[1], environment);
+
+        environment.popRecord();
+
+        return result;
+    };
+}
+;function LikeOperation() {
     this.make = function (lhs, rhs) {
         return [
             'like',
@@ -338,10 +357,10 @@ Jsonbase.Load = function (name) {
     };
 
     this.execute = function (data, environment) {
-        var records = environment.operations[data[1][0]].execute(data[1], environment).filter(function (record) {
+        var records = environment.execute(data[1]).filter(function (record) {
             environment.record = record;
 
-            return environment.operations[data[2][0]].execute(data[2], environment);
+            return environment.execute(data[2]);
         });
 
         environment.record = null;
