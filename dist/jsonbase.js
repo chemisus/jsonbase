@@ -1,4 +1,56 @@
-function AndOperation() {
+function Database() {
+
+}
+;function EnvironmentFactory() {
+    this.make = function (file, options) {
+        options = options || {};
+
+        return {
+            file: file,
+            operations: options.operations || this.makeOperations(),
+            constraints: options.constraints || this.makeConstraints(),
+            database: options.database || this.makeDatabase(),
+            table: options.table || this.makeTable()
+        };
+    };
+
+    this.makeOperations = function () {
+        return {
+            select: new SelectOperation(),
+            table: new TableOperation(),
+            const: new ConstOperation(),
+            get: new GetOperation(),
+            eq: new EqualOperation(),
+            or: new OrOperation(),
+            and: new AndOperation(),
+            not: new NotOperation(),
+            true: new TrueOperation(),
+            in: new InOperation(),
+            path: new PathOperation()
+        };
+    };
+
+    this.makeConstraints = function () {
+    };
+
+    this.makeDatabase = function () {
+        return new Database();
+    };
+
+    this.makeTable = function () {
+        return new Table();
+    };
+}
+;function Jsonbase(environment) {
+    this.save = function () {
+        localStorage.setItem(environment.name, environment.toJson(environment.file));
+    };
+
+    this.load = function () {
+        environment.file = environment.fromJson(localStorage.getItem(environment.name) || 'null');
+    };
+}
+;function AndOperation() {
     this.make = function (operations) {
         return [
             'and',
@@ -74,7 +126,46 @@ function AndOperation() {
         return false;
     };
 }
-;function NotOperation() {
+;function JoinOperation() {
+    this.make = function (left, right, on, as) {
+        return [
+            'join',
+            left,
+            right,
+            on,
+            as
+        ];
+    };
+
+    this.execute = function (data, environment) {
+        var lefts = environment.operations[data[1][0]].execute(data[1], environment);
+        var rights = environment.operations[data[2][0]].execute(data[2], environment);
+
+        var joins = [];
+
+        for (var i = 0; i < lefts.length; i++) {
+            var left = Object.create(lefts[i]);
+            left[data[4]] = [];
+
+            for (var j = 0; j < rights.length; j++) {
+                environment.record = {
+                    left: lefts[i],
+                    right: rights[j]
+                };
+
+                if (environment.operations[data[3][0]].execute(data[3], environment)) {
+                    results.push(rights[j]);
+                }
+            }
+
+            left[data[4]] = results;
+
+            joins.push(left);
+        }
+
+        return joins;
+    };
+};function NotOperation() {
     this.make = function (value) {
         return [
             'not',
@@ -114,6 +205,24 @@ function AndOperation() {
 
     this.execute = function (data, environment) {
         return environment.parameters[data[1]];
+    };
+};function PathOperation() {
+    this.make = function (value) {
+        return [
+            'path',
+            value
+        ];
+    };
+
+    this.execute = function (data, environment) {
+        var path = data[1].split('.');
+        var result = environment.record;
+
+        for (var i = 0; i < path.length; i++) {
+            result = result[path[i]];
+        }
+
+        return result;
     };
 };function SelectOperation() {
     this.make = function (from, where) {
@@ -155,4 +264,23 @@ function AndOperation() {
     this.execute = function (data, environment) {
         return true;
     };
+};function Query(environment) {
+    this.select = function (from, where) {
+        return environment.operations.select.make(from, where);
+    };
+
+    this.table = function (name) {
+        return environment.operations.table.make(name);
+    };
+
+    this.true = function () {
+        return environment.operations.true.make();
+    };
+
+    this.execute = function (query) {
+        return environment.operations[query[0]].execute(query, environment);
+    };
+}
+;function Table() {
+
 }

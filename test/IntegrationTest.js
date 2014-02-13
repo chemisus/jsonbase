@@ -1,4 +1,6 @@
 describe('integration test', function () {
+    var environment_factory = new EnvironmentFactory();
+
     var tables = {
         users: [
             {name: 'a'},
@@ -8,18 +10,7 @@ describe('integration test', function () {
         ]
     };
 
-    var ops = {
-        select: new SelectOperation(),
-        table: new TableOperation(),
-        const: new ConstOperation(),
-        get: new GetOperation(),
-        eq: new EqualOperation(),
-        or: new OrOperation(),
-        and: new AndOperation(),
-        not: new NotOperation(),
-        true: new TrueOperation(),
-        in: new InOperation()
-    };
+    var ops = environment_factory.makeOperations();
 
     var environment = {
         file: {
@@ -147,5 +138,11 @@ describe('integration test', function () {
         );
 
         expect(ops[data[0]].execute(data, environment)).toEqual([{name: 'b'}, {name: 'c'}]);
+    });
+
+    it('should be able to easily query', function () {
+        var q = new Query(environment);
+
+        expect(q.execute(q.select(q.table('users'), q.true()))).toEqual(tables.users);
     });
 });
