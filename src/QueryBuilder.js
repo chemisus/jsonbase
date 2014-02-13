@@ -7,6 +7,18 @@ function QueryBuilder(environment) {
         return environment.operations.table.make(name);
     };
 
+    this.get = function (value) {
+        return environment.operations.get.make(value);
+    };
+
+    this.const = function (value) {
+        return environment.operations.const.make(value);
+    };
+
+    this.eq = function (lhs, rhs) {
+        return environment.operations.eq.make(lhs, rhs);
+    };
+
     this.true = function () {
         return environment.operations.true.make();
     };
