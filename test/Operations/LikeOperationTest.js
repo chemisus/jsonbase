@@ -18,7 +18,7 @@ describe('like operation', function () {
         var data = operation.make(['lhs'], ['rhs']);
 
         environment.operations.lhs.execute.andReturn('a b c d e');
-        environment.operations.rhs.execute.andReturn(/a.*?c.+?e/);
+        environment.operations.rhs.execute.andReturn('%a%c%e%');
 
         expect(operation.execute(data, environment)).toBeTruthy();
 
@@ -37,7 +37,7 @@ describe('like operation', function () {
         var data = operation.make(['lhs'], ['rhs']);
 
         environment.operations.lhs.execute.andReturn('a b c d e');
-        environment.operations.rhs.execute.andReturn(/ace/);
+        environment.operations.rhs.execute.andReturn('abc');
 
         expect(operation.execute(data, environment)).toBeFalsy();
 
