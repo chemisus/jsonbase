@@ -1,6 +1,10 @@
 function Table() {
-    this.addTable = function (file, name) {
-        file.tables.keys.push(name);
-        file.tables.values[name] = [];
+    this.createTable = function (file, table_name) {
+        file.tables.keys.push(table_name);
+        file.tables.values[table_name] = [];
+    };
+
+    this.insert = function (file, table_name, record) {
+        file.tables.values[table_name].push(record);
     };
 }

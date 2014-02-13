@@ -11,12 +11,20 @@ function Jsonbase(environment) {
         return environment;
     };
 
+    this.file = function () {
+        return environment.file;
+    };
+
     this.queryBuilder = function () {
         return environment.query_builder;
     };
 
-    this.createTable = function (name) {
-        environment.table.addTable(environment.file, name);
+    this.createTable = function (table_name) {
+        environment.table.createTable(this.file(), table_name);
+    };
+
+    this.insert = function (table_name, record) {
+        environment.table.insert(this.file(), table_name, record);
     };
 }
 

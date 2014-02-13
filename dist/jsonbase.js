@@ -62,12 +62,20 @@ function Database() {
         return environment;
     };
 
+    this.file = function () {
+        return environment.file;
+    };
+
     this.queryBuilder = function () {
         return environment.query_builder;
     };
 
-    this.createTable = function (name) {
-        environment.table.addTable(environment.file, name);
+    this.createTable = function (table_name) {
+        environment.table.createTable(this.file(), table_name);
+    };
+
+    this.insert = function (table_name, record) {
+        environment.table.insert(this.file(), table_name, record);
     };
 }
 
@@ -320,8 +328,12 @@ Jsonbase.Load = function (name) {
     };
 }
 ;function Table() {
-    this.addTable = function (file, name) {
-        file.tables.keys.push(name);
-        file.tables.values[name] = [];
+    this.createTable = function (file, table_name) {
+        file.tables.keys.push(table_name);
+        file.tables.values[table_name] = [];
+    };
+
+    this.insert = function (file, table_name, record) {
+        file.tables.values[table_name].push(record);
     };
 }
