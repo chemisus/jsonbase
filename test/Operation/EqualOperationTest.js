@@ -9,12 +9,12 @@ describe('const operation', function () {
     var key = 'eq';
 
     beforeEach(function () {
-        var environment_factory = new EnvironmentFactory();
-
         op = new EqualOperation();
         ops = {};
-        env = environment_factory.make({
-            operations: ops
+        env = jasmine.createSpyObj('env', ['execute']);
+
+        env.execute.andCallFake(function (op) {
+            return ops[op[0]].execute(op, env);
         });
 
         ops[a] = jasmine.createSpyObj(a, ['execute']);

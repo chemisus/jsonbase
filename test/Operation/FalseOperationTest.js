@@ -1,23 +1,22 @@
 describe('false operation', function () {
     var op = null;
     var env = null;
+    var key = 'false';
 
     beforeEach(function () {
-        var environment_factory = new EnvironmentFactory();
-
         op = new FalseOperation();
-        env = environment_factory.make();
+        env = {};
     });
 
     it('should make proper data', function () {
-        var expected = ['false'];
+        var expected = [key];
 
         var actual = op.make();
 
         expect(actual).toEqual(expected);
     });
 
-    it('should return false when executed', function () {
+    it('should return true when executed', function () {
         var expected = false;
 
         var actual = op.execute(op.make(), env);

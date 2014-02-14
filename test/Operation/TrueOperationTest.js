@@ -1,16 +1,15 @@
 describe('true operation', function () {
     var op = null;
     var env = null;
+    var key = 'true';
 
     beforeEach(function () {
-        var environment_factory = new EnvironmentFactory();
-
         op = new TrueOperation();
-        env = environment_factory.make();
+        env = {};
     });
 
     it('should make proper data', function () {
-        var expected = ['true'];
+        var expected = [key];
 
         var actual = op.make();
 
