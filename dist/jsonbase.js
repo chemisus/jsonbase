@@ -5,6 +5,20 @@
  * @constructor
  */
 function Environment(operations, query_builder_factory) {
+    var records = [null];
+
+    this.record = function () {
+        return records[records.length - 1];
+    };
+
+    this.pushRecord = function (value) {
+        records.push(value);
+    };
+
+    this.popRecord = function () {
+        return records.pop();
+    };
+
     this.execute = function (op) {
         return this.operation(op[0]).execute(op, this);
     };
@@ -43,6 +57,8 @@ function Environment(operations, query_builder_factory) {
             false: new FalseOperation(),
             const: new ConstOperation(),
             not: new NotOperation(),
+            record: new RecordOperation(),
+            map: new MapOperation(),
             eq: new EqualOperation()
         };
     };
@@ -77,13 +93,38 @@ function Environment(operations, query_builder_factory) {
         return false;
     };
 }
-;function NotOperation() {
+;function MapOperation() {
+    this.make = function (values, mapper) {
+        return ['map', values, mapper];
+    };
+
+    this.execute = function (op, env) {
+        return env.execute(op[1]).map(function (record) {
+            env.pushRecord(record);
+
+            var result = env.execute(op[2]);
+
+            env.popRecord();
+
+            return result;
+        });
+    };
+};function NotOperation() {
     this.make = function (value) {
         return ['not', value];
     };
 
     this.execute = function (op, env) {
         return !env.execute(op[1]);
+    };
+}
+;function RecordOperation() {
+    this.make = function () {
+        return ['record'];
+    };
+
+    this.execute = function (op, env) {
+        return env.record();
     };
 }
 ;function TrueOperation() {

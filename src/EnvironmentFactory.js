@@ -14,6 +14,8 @@ function EnvironmentFactory() {
             false: new FalseOperation(),
             const: new ConstOperation(),
             not: new NotOperation(),
+            record: new RecordOperation(),
+            map: new MapOperation(),
             eq: new EqualOperation()
         };
     };

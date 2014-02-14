@@ -5,6 +5,20 @@
  * @constructor
  */
 function Environment(operations, query_builder_factory) {
+    var records = [null];
+
+    this.record = function () {
+        return records[records.length - 1];
+    };
+
+    this.pushRecord = function (value) {
+        records.push(value);
+    };
+
+    this.popRecord = function () {
+        return records.pop();
+    };
+
     this.execute = function (op) {
         return this.operation(op[0]).execute(op, this);
     };
