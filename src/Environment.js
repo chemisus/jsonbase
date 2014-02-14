@@ -1,5 +1,29 @@
-function Environment(ops) {
+/**
+ *
+ * @param operations
+ * @param {QueryBuilderFactory} query_builder_factory
+ * @constructor
+ */
+function Environment(operations, query_builder_factory) {
     this.execute = function (op) {
-        return ops[op[0]].execute(op, this);
+        return this.operation(op[0]).execute(op, this);
+    };
+
+    this.operation = function (key) {
+        return operations[key];
+    };
+
+    this.availableOperations = function () {
+        var keys = [];
+
+        for (var i in operations) {
+            keys.push(i);
+        }
+
+        return keys;
+    };
+
+    this.queryBuilder = function () {
+        return query_builder_factory.make(this);
     };
 }

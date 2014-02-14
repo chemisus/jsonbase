@@ -3,7 +3,8 @@ function EnvironmentFactory() {
         options = options || {};
 
         return new Environment(
-            options.operations || this.makeOperations()
+            options.operations || this.makeOperations(),
+            options.query_builder_factory || new QueryBuilderFactory()
         );
     };
 
@@ -12,6 +13,7 @@ function EnvironmentFactory() {
             true: new TrueOperation(),
             false: new FalseOperation(),
             const: new ConstOperation(),
+            not: new NotOperation(),
             eq: new EqualOperation()
         };
     };

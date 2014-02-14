@@ -1,6 +1,30 @@
-function Environment(ops) {
+/**
+ *
+ * @param operations
+ * @param {QueryBuilderFactory} query_builder_factory
+ * @constructor
+ */
+function Environment(operations, query_builder_factory) {
     this.execute = function (op) {
-        return ops[op[0]].execute(op, this);
+        return this.operation(op[0]).execute(op, this);
+    };
+
+    this.operation = function (key) {
+        return operations[key];
+    };
+
+    this.availableOperations = function () {
+        var keys = [];
+
+        for (var i in operations) {
+            keys.push(i);
+        }
+
+        return keys;
+    };
+
+    this.queryBuilder = function () {
+        return query_builder_factory.make(this);
     };
 }
 ;function EnvironmentFactory() {
@@ -8,7 +32,8 @@ function Environment(ops) {
         options = options || {};
 
         return new Environment(
-            options.operations || this.makeOperations()
+            options.operations || this.makeOperations(),
+            options.query_builder_factory || new QueryBuilderFactory()
         );
     };
 
@@ -17,6 +42,7 @@ function Environment(ops) {
             true: new TrueOperation(),
             false: new FalseOperation(),
             const: new ConstOperation(),
+            not: new NotOperation(),
             eq: new EqualOperation()
         };
     };
@@ -51,6 +77,15 @@ function Environment(ops) {
         return false;
     };
 }
+;function NotOperation() {
+    this.make = function (value) {
+        return ['not', value];
+    };
+
+    this.execute = function (op, env) {
+        return !env.execute(op[1]);
+    };
+}
 ;function TrueOperation() {
     this.make = function () {
         return ['true'];
@@ -58,5 +93,17 @@ function Environment(ops) {
 
     this.execute = function (op, env) {
         return true;
+    };
+}
+;function QueryBuilder(env) {
+    var keys = env.availableOperations();
+
+    for (var i = 0; i < keys.length; i++) {
+        this[keys[i]] = env.operation(keys[i]).make;
+    }
+}
+;function QueryBuilderFactory() {
+    this.make = function (env) {
+        return new QueryBuilder(env);
     };
 }
