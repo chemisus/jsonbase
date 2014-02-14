@@ -8,7 +8,8 @@ function EnvironmentFactory() {
     this.makeOperations = function () {
         return {
             true: new TrueOperation(),
-            false: new FalseOperation()
+            false: new FalseOperation(),
+            const: new ConstOperation()
         };
     };
 }

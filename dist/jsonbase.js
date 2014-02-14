@@ -13,8 +13,18 @@ function Environment(ops) {
     this.makeOperations = function () {
         return {
             true: new TrueOperation(),
-            false: new FalseOperation()
+            false: new FalseOperation(),
+            const: new ConstOperation()
         };
+    };
+}
+;function ConstOperation() {
+    this.make = function (value) {
+        return ['const', value];
+    };
+
+    this.execute = function (op, env) {
+        return op[1];
     };
 }
 ;function FalseOperation() {
