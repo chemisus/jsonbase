@@ -84,6 +84,9 @@ function Database() {
 
     this.makeOperations = function () {
         return {
+            map: new MapOperation(),
+            reduce: new ReduceOperation(),
+            filter: new FilterOperation(),
             select: new SelectOperation(),
             table: new TableOperation(),
             const: new ConstOperation(),
@@ -93,6 +96,7 @@ function Database() {
             and: new AndOperation(),
             not: new NotOperation(),
             true: new TrueOperation(),
+            false: new FalseOperation(),
             in: new InOperation(),
             path: new PathOperation(),
             like: new LikeOperation(),
@@ -218,6 +222,29 @@ Jsonbase.Load = function (name) {
         return  lhs == rhs;
     };
 }
+;function FalseOperation() {
+    this.make = function () {
+        return ['false'];
+    };
+
+    this.execute = function (data, environment) {
+        return false;
+    };
+};function FilterOperation() {
+    this.make = function (array, value) {
+        return [
+            'filter',
+            array,
+            value
+        ];
+    };
+
+    this.execute = function (data, environment) {
+        return environment.execute(data[1]).filter(function () {
+            return environment.execute(data[2]);
+        });
+    };
+}
 ;function GetOperation() {
     this.make = function (field_name) {
         return [
@@ -340,6 +367,21 @@ Jsonbase.Load = function (name) {
         return new RegExp(rhs).test(lhs);
     };
 }
+;function MapOperation() {
+    this.make = function (from, to) {
+        return [
+            'map',
+            from,
+            to
+        ];
+    };
+
+    this.execute = function (data, environment) {
+        return environment.execute(data[1]).map(function () {
+            return environment.execute(data[2]);
+        });
+    };
+}
 ;function NotOperation() {
     this.make = function (value) {
         return [
@@ -399,7 +441,23 @@ Jsonbase.Load = function (name) {
 
         return result;
     };
-};function RightOperation() {
+};function ReduceOperation() {
+    this.make = function (intial, array, value) {
+        return [
+            'reduce',
+            intial,
+            array,
+            value
+        ];
+    };
+
+    this.execute = function (data, environment) {
+        return environment.execute(data[2]).reduce(environment.execute(data[1]), function () {
+            return environment.execute(data[3]);
+        });
+    };
+}
+;function RightOperation() {
     this.make = function (value) {
         return ['right', value];
     };

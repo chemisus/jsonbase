@@ -46,6 +46,9 @@ function EnvironmentFactory(toJson, fromJson) {
 
     this.makeOperations = function () {
         return {
+            map: new MapOperation(),
+            reduce: new ReduceOperation(),
+            filter: new FilterOperation(),
             select: new SelectOperation(),
             table: new TableOperation(),
             const: new ConstOperation(),
@@ -55,6 +58,7 @@ function EnvironmentFactory(toJson, fromJson) {
             and: new AndOperation(),
             not: new NotOperation(),
             true: new TrueOperation(),
+            false: new FalseOperation(),
             in: new InOperation(),
             path: new PathOperation(),
             like: new LikeOperation(),
