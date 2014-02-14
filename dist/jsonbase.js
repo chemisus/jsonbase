@@ -4,9 +4,11 @@ function Environment(ops) {
     };
 }
 ;function EnvironmentFactory() {
-    this.make = function () {
+    this.make = function (options) {
+        options = options || {};
+
         return new Environment(
-            this.makeOperations()
+            options.operations || this.makeOperations()
         );
     };
 
@@ -14,7 +16,8 @@ function Environment(ops) {
         return {
             true: new TrueOperation(),
             false: new FalseOperation(),
-            const: new ConstOperation()
+            const: new ConstOperation(),
+            eq: new EqualOperation()
         };
     };
 }
@@ -25,6 +28,18 @@ function Environment(ops) {
 
     this.execute = function (op, env) {
         return op[1];
+    };
+}
+;function EqualOperation() {
+    this.make = function (lhs, rhs) {
+        return ['eq', lhs, rhs];
+    };
+
+    this.execute = function (op, env) {
+        var lhs = env.execute(op[1]);
+        var rhs = env.execute(op[2]);
+
+        return lhs == rhs;
     };
 }
 ;function FalseOperation() {

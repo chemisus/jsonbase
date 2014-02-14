@@ -24,12 +24,4 @@ describe('true operation', function () {
 
         expect(actual).toEqual(expected);
     });
-
-    it('should return true when executed via environment', function () {
-        var expected = true;
-
-        var actual = env.execute(op.make());
-
-        expect(actual).toEqual(expected);
-    });
 });

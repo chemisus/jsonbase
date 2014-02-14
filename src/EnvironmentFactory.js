@@ -1,7 +1,9 @@
 function EnvironmentFactory() {
-    this.make = function () {
+    this.make = function (options) {
+        options = options || {};
+
         return new Environment(
-            this.makeOperations()
+            options.operations || this.makeOperations()
         );
     };
 
@@ -9,7 +11,8 @@ function EnvironmentFactory() {
         return {
             true: new TrueOperation(),
             false: new FalseOperation(),
-            const: new ConstOperation()
+            const: new ConstOperation(),
+            eq: new EqualOperation()
         };
     };
 }

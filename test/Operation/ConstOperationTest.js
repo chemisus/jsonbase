@@ -24,12 +24,4 @@ describe('const operation', function () {
 
         expect(actual).toEqual(expected);
     });
-
-    it('should return the value when executed via environment', function () {
-        var expected = 'a';
-
-        var actual = env.execute(op.make(expected));
-
-        expect(actual).toEqual(expected);
-    });
 });
