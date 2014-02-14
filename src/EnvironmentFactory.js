@@ -7,7 +7,8 @@ function EnvironmentFactory() {
 
     this.makeOperations = function () {
         return {
-            true: new TrueOperation()
+            true: new TrueOperation(),
+            false: new FalseOperation()
         };
     };
 }
